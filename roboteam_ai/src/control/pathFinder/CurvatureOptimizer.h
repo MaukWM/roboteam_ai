@@ -15,19 +15,19 @@ class CurvatureOptimizer {
         std::vector<Vector2> controlPoints;
         std::vector<float> parameters;
         std::vector<float> weights;
-        int numPoints = 1000;
+        int numPoints = 100;
 
         /// Functions
         std::vector<float> calculateTimeVector(float t, int derivative);
         std::vector<float> computeChange(float t);
         float factorial(float x);
         float sigmoid(float x);
-        float calculateCurvature();
-        void calculateWeights();
+        void updateWeights();
 
     public:
         CurvatureOptimizer();
         std::vector<Vector2> optimizeControlPoints();
+        float calculateMaximumCurvature();
 
         /// SETTERS
         void setPathNodes(const std::vector<Vector2> &pathNodes);
