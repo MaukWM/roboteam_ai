@@ -28,6 +28,7 @@ class CurvatureOptimizer {
         CurvatureOptimizer();
         std::vector<Vector2> optimizeControlPoints();
         float calculateMaximumCurvature();
+        float calculateMaximumCurvatureTime();
 
         /// SETTERS
         void setPathNodes(const std::vector<Vector2> &pathNodes);

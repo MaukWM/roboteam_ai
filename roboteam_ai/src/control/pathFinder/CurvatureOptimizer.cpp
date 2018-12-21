@@ -13,33 +13,30 @@ CurvatureOptimizer::CurvatureOptimizer() {
 /// Shift control points to minimize the curvature
 // The start, end, start velocity and end velocity control points will not be shifted.
 std::vector<Vector2> CurvatureOptimizer::optimizeControlPoints() {
+    int lastControlPoint =
+            controlPoints.back() == pathNodes.back() ? (int) controlPoints.size() - 2 : (int) controlPoints.size() - 1;
     if (controlPoints.size() > 4) {
-        int lastControlPoint =
-                controlPoints.back() == pathNodes.back() ? (int) controlPoints.size() - 2 : (int) controlPoints.size() - 1;
-        // Set weights default to 0.5
-        for (int i = 0; i < lastControlPoint-2; i ++) {
-            weights.push_back(0.5);
+        // Set weights default to 0 and parameters default to 0.5
+        for (int i = 0; i < controlPoints.size(); i ++) {
+            weights.push_back(0);
+            parameters.push_back(0.5);
         }
 
-        updateWeights();
-        std::cout << "cp before: " << std::endl;
-        for (Vector2 &cp : controlPoints) {
-            std::cout << cp << std::endl;
-        }
-        std::cout << "Parameters: " << std::endl;
-        for (float B : weights) {
-            parameters.push_back(sigmoid(B));
-            std::cout << sigmoid(B) << std::endl;
-        }
-        for (int i = 2; i < lastControlPoint; i ++) {
-            controlPoints[i] = pathNodes[i - 1] + (pathNodes[i] - pathNodes[i - 1]).scale(parameters[i-2]);
-        }
-        std::cout << "cp after: " << std::endl;
-        for (Vector2 &cp : controlPoints) {
-            std::cout << cp << std::endl;
+        float learningRate = 1000; // TODO: magical number, could be just equal to 1?
+        float maxTime;
+        std::vector<float> change;
+        for (int j = 0; j < 100; j++) {
+            maxTime = calculateMaximumCurvatureTime();
+            change = computeChange(maxTime);
+            for (int i = 0; i < weights.size(); i ++) {
+                weights[i] -= learningRate*change[i];
+                parameters[i] = sigmoid(weights[i]);
+            }
+            for (int i = 2; i < lastControlPoint; i ++) {
+                controlPoints[i] = pathNodes[i - 1] + (pathNodes[i] - pathNodes[i - 1]).scale(parameters[i]);
+            }
         }
     }
-
     return controlPoints;
 }
 
@@ -57,9 +54,9 @@ std::vector<float> CurvatureOptimizer::calculateTimeVector(float t, int derivati
                     - (float) pow(t, i)*(curveDegree - i)*(float) pow(1 - t, curveDegree - i - 1));
         case 2:
             coefficient =
-                    controlPointWeight*((float) pow(i, 2)*(float) pow(t, i - 2)*(float) pow(1 - t, curveDegree - i)
+                    controlPointWeight*(i*(i - 1)*(float) pow(t, i - 2)*(float) pow(1 - t, curveDegree - i)
                             - 2*i*(float) pow(t, i - 1)*(curveDegree - i)*(float) pow(1 - t, curveDegree - i - 1)
-                            + (float) pow(t, i)*(float) pow(curveDegree - i, 2)
+                            + (float) pow(t, i)*(curveDegree - i)*(curveDegree - i - 1)
                                     *(float) pow(1 - t, curveDegree - i - 2));
         default: coefficient = controlPointWeight*(float) pow(t, i)*(float) pow(1 - t, curveDegree - i);
         }
@@ -67,11 +64,6 @@ std::vector<float> CurvatureOptimizer::calculateTimeVector(float t, int derivati
     }
 
     // Fix NAN data
-    if (derivative == 2) {
-        timeVector[1] = timeVector[2] - (timeVector[3] - timeVector[2]);
-        timeVector[timeVector.size() - 2] = timeVector[timeVector.size() - 3]
-                - (timeVector[timeVector.size() - 4] - timeVector[timeVector.size() - 3]);
-    }
     if (derivative == 1) {
         timeVector[0] = timeVector[1] - (timeVector[2] - timeVector[1]);
         timeVector[timeVector.size() - 1] = timeVector[timeVector.size() - 2]
@@ -98,16 +90,18 @@ std::vector<float> CurvatureOptimizer::computeChange(float t) {
     dQdA.emplace_back(Vector2(0, 0));
     dQdA.emplace_back(Vector2(0, 0));
 
-    float dx=0, ddx=0, dy=0, ddy=0;
-    for (int i = 0; i < controlPoints.size(); i++) {
+    float dx = 0, ddx = 0, dy = 0, ddy = 0;
+    for (int i = 0; i < controlPoints.size(); i ++) {
         dx += (float) controlPoints[i].x*dTimeVector[i];
         ddx += (float) controlPoints[i].x*ddTimeVector[i];
         dy += (float) controlPoints[i].y*dTimeVector[i];
         ddy += (float) controlPoints[i].y*ddTimeVector[i];
     }
     for (int i = 2; i < lastControlPoint; i ++) {
-        float dKdQx = (dTimeVector[i]*ddy - ddTimeVector[i]*dy)*(float) pow(dx*dx + dy*dy, -1.5) - 3*dTimeVector[i]*dx*(dx*ddy-ddx*dy)*(float) pow(dx*dx + dy*dy, -2.5);
-        float dKdQy = (ddTimeVector[i]*dx - dTimeVector[i]*ddx)*(float) pow(dx*dx + dy*dy, -1.5) - 3*dTimeVector[i]*dy*(dx*ddy-ddx*dy)*(float) pow(dx*dx + dy*dy, -2.5);
+        float dKdQx = (dTimeVector[i]*ddy - ddTimeVector[i]*dy)*(float) pow(dx*dx + dy*dy, - 1.5)
+                - 3*dTimeVector[i]*dx*(dx*ddy - ddx*dy)*(float) pow(dx*dx + dy*dy, - 2.5);
+        float dKdQy = (ddTimeVector[i]*dx - dTimeVector[i]*ddx)*(float) pow(dx*dx + dy*dy, - 1.5)
+                - 3*dTimeVector[i]*dy*(dx*ddy - ddx*dy)*(float) pow(dx*dx + dy*dy, - 2.5);
 
         dKdQ.emplace_back(Vector2(dKdQx, dKdQy));
         dQdA.emplace_back(pathNodes[i] - pathNodes[i - 1]);
@@ -133,6 +127,7 @@ std::vector<float> CurvatureOptimizer::computeChange(float t) {
 }
 
 /// Calculate the maximum curvature based on the current set of control points
+/// ONLY USED FOR TESTING
 float CurvatureOptimizer::calculateMaximumCurvature() {
     std::vector<float> dTimeVector;
     std::vector<float> ddTimeVector;
@@ -144,32 +139,45 @@ float CurvatureOptimizer::calculateMaximumCurvature() {
         dTimeVector = calculateTimeVector(t, 1);
         ddTimeVector = calculateTimeVector(t, 2);
 
-        float dx = 0, ddx=0, dy=0, ddy=0;
+        float dx = 0, ddx = 0, dy = 0, ddy = 0;
         for (int j = 0; j < controlPoints.size(); j ++) {
             dx += (float) controlPoints[j].x*dTimeVector[j];
             ddx += (float) controlPoints[j].x*ddTimeVector[j];
             dy += (float) controlPoints[j].y*dTimeVector[j];
             ddy += (float) controlPoints[j].y*ddTimeVector[j];
         }
-        tempCurvature = (dx*ddy - ddx*dy)/(float)pow(dx*dx + dy*dy, 3.0/2.0);
+        tempCurvature = (dx*ddy - ddx*dy)/(float) pow(dx*dx + dy*dy, 3.0/2.0);
         maxCurvature = tempCurvature > maxCurvature ? tempCurvature : maxCurvature;
         t += 1.0/numPoints;
     }
     return maxCurvature;
 }
 
-/// Update the weights for the parameters with the new changes
-void CurvatureOptimizer::updateWeights() {
+/// Calculate the maximum curvature time based on the current set of control points
+float CurvatureOptimizer::calculateMaximumCurvatureTime() {
+    std::vector<float> dTimeVector;
+    std::vector<float> ddTimeVector;
+
     float t = 0;
-    std::vector<float> change;
-    float learningRate = 1; // TODO: magical number, could be just equal to 1?
+    float maxCurvature = 0;
+    float tempCurvature;
+    float maxTime = 0;
     for (int i = 0; i < numPoints; i ++) {
-        change = computeChange(t);
-        for (int j = 0; j < weights.size(); j ++) {
-            weights[i] -= learningRate * change[j];
+        dTimeVector = calculateTimeVector(t, 1);
+        ddTimeVector = calculateTimeVector(t, 2);
+
+        float dx = 0, ddx = 0, dy = 0, ddy = 0;
+        for (int j = 0; j < controlPoints.size(); j ++) {
+            dx += (float) controlPoints[j].x*dTimeVector[j];
+            ddx += (float) controlPoints[j].x*ddTimeVector[j];
+            dy += (float) controlPoints[j].y*dTimeVector[j];
+            ddy += (float) controlPoints[j].y*ddTimeVector[j];
         }
+        tempCurvature = (dx*ddy - ddx*dy)/(float) pow(dx*dx + dy*dy, 3.0/2.0);
+        maxTime = tempCurvature > maxCurvature ? t : maxTime;
         t += 1.0/numPoints;
     }
+    return maxTime;
 }
 
 /// Factorial function: result = x!
