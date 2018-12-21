@@ -9,8 +9,8 @@ namespace rtt {
 namespace ai {
 TEST(CurvatureOptimizerTest, CurvatureOptimizerTest) {
     /// Make test data
-    std::vector<Vector2> controlPoints = {Vector2(0,0), Vector2(1,2), Vector2(2,2), Vector2(3,0), Vector2(5,0)};
-    std::vector<Vector2> pathNodes = {Vector2(0,0), Vector2(1,2), Vector2(2,2), Vector2(3,0), Vector2(5,0), Vector2(6,3)};
+    std::vector<Vector2> controlPoints = {Vector2(0,0), Vector2(0.5,1), Vector2(1.5,2), Vector2(2.5,1), Vector2(4,0), Vector2(5,0)};
+    std::vector<Vector2> pathNodes = {Vector2(0,0), Vector2(1,2), Vector2(2,2), Vector2(3,0), Vector2(5,0)};
 
     /// Run program
     CurvatureOptimizer curvatureOptimizer;
