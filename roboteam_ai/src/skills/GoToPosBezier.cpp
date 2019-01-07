@@ -62,9 +62,14 @@ void GoToPosBezier::onInitialize() {
 /// Get an update on the skill
 bt::Node::Status GoToPosBezier::onUpdate() {
 
-//    if (World::getRobotForId(robotID, true)) {
-//        robot = World::getRobotForId(robotID, true).get();
-//    }
+    auto world = World::get_world();
+    if (World::getRobotForId(robotID, true)) {
+        robot = *World::getRobotForId(robotID, true).get();
+    }
+    else {
+        ROS_ERROR("GoToPos Initialize -> robot does not exist in world");
+        currentProgress = Progression::INVALID;
+    }
 
     if (goToBall) {
         auto ball = World::getBall();
@@ -93,9 +98,13 @@ bt::Node::Status GoToPosBezier::onUpdate() {
 //    pidStartTime = clock();
 
     Vector2 OutputPID = pidBezier.controlPIR2(posError, robot.vel);
+//    if (OutputPID.length() > 1) {
+//        OutputPID.stretchToLength(1);
+//    }
 
 //    float xOutputPID = control::ControlUtils::PIDcontroller((float) posError.x, pidVarsXPos);
 //    float yOutputPID = control::ControlUtils::PIDcontroller((float) posError.y, pidVarsYPos);
+
 
     curve.velocities[currentPoint].x += OutputPID.x;
     curve.velocities[currentPoint].y += OutputPID.y;
@@ -103,9 +112,9 @@ bt::Node::Status GoToPosBezier::onUpdate() {
     double xVelocity =
             curve.velocities[currentPoint].x*cos(robot.angle) + curve.velocities[currentPoint].y*sin(robot.angle);
     double yVelocity =
-            curve.velocities[currentPoint].x*- sin(robot.angle) + curve.velocities[currentPoint].y*cos(robot.angle);
+            curve.velocities[currentPoint].x* -sin(robot.angle) + curve.velocities[currentPoint].y*cos(robot.angle);
 
-    auto desiredAngle = M_PI;
+    auto desiredAngle = (float)M_PI;
 
     // Send a move command
     sendMoveCommand(desiredAngle, xVelocity, yVelocity);
@@ -168,8 +177,8 @@ void GoToPosBezier::sendMoveCommand(float desiredAngle, double xVelocity, double
     roboteam_msgs::RobotCommand command;
     command.id = robot.id;
     command.use_angle = 0;
-    //command.w = desiredAngle;
-    command.w = (float) control::ControlUtils::calculateAngularVelocity(robot.angle, desiredAngle);
+    command.w = 0;
+    //command.w = (float) control::ControlUtils::calculateAngularVelocity(robot.angle, desiredAngle);
 //    std::cout << "Current angle: " << robot.angle << std::endl;
 //    std::cout << "Desired angle: " << desiredAngle << std::endl;
 
@@ -219,6 +228,14 @@ void GoToPosBezier::terminate(status s) {
 void GoToPosBezier::updateCurveData(int currentPoint, bool isErrorTooLarge) {
     // TODO: don't hardcode end orientation & velocity
     auto world = World::get_world();
+    if (World::getRobotForId(robotID, true)) {
+        robot = *World::getRobotForId(robotID, true).get();
+    }
+    else {
+        ROS_ERROR("GoToPos Initialize -> robot does not exist in world");
+        currentProgress = Progression::INVALID;
+        return;
+    }
     std::vector<Vector2> robotCoordinates;
     for (auto ourBot: world.us) {
         if (ourBot.id != robot.id) {
@@ -237,7 +254,7 @@ void GoToPosBezier::updateCurveData(int currentPoint, bool isErrorTooLarge) {
     Vector2 startPos = robot.pos;
     float startAngle = robot.angle;
 
-    if (! curve.positions.empty() && ! isErrorTooLarge) {
+    if (! curve.positions.empty() and ! isErrorTooLarge) {
         startPos = curve.positions[currentPoint];
         startAngle = curve.angles[currentPoint];
         startVelocity = (float) curve.velocities[currentPoint].length();
