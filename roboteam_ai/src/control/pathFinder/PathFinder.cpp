@@ -54,7 +54,7 @@ void PathFinder::calculatePath(Vector2 endPosition, Vector2 startPosition, float
     // Change object vector to matrix
     arma::Mat<float> temp;
     arma::Mat<float> objectCoordinatesMatrix;
-    for (auto i = objectCoordinatesVector.size() - 1; i > - 1; i --) {
+    for (auto i = (int)objectCoordinatesVector.size() - 1; i > - 1; i --) {
         temp << objectCoordinatesVector[i].x << objectCoordinatesVector[i].y << arma::endr;
         objectCoordinatesMatrix.insert_rows(0, temp);
     }
