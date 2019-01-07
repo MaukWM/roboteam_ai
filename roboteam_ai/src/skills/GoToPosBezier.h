@@ -9,6 +9,7 @@
 #include "roboteam_utils/Vector2.h"
 #include "../control/pathFinder/PathFinder.h"
 #include "../control/ControlUtils.h"
+#include "../utilities/Constants.h"
 
 namespace rtt {
 namespace ai {
@@ -46,7 +47,7 @@ class GoToPosBezier : public Skill {
         bool goToBall;
 
         roboteam_msgs::WorldRobot robot;
-        int robotID;
+        unsigned int robotID;
 
         enum Progression {
           ON_THE_WAY, DONE, FAIL, INVALID

@@ -53,15 +53,15 @@ void GoToPosBezier::onInitialize() {
     }
 
     updateCurveData(0, false);
-    /// Set PID values
-    pidBezier.setPID(3.0, 0.1, 0.1);
 
+    // Set PID values
+    pidBezier.setPID(3.0, 0.1, 0.1);
     pidStartTime = clock();
 }
 
 /// Get an update on the skill
 bt::Node::Status GoToPosBezier::onUpdate() {
-
+    // Update world data
     auto world = World::get_world();
     if (World::getRobotForId(robotID, true)) {
         robot = *World::getRobotForId(robotID, true).get();
@@ -81,34 +81,21 @@ bt::Node::Status GoToPosBezier::onUpdate() {
         return status::Failure;
     }
 
-    // Check if the goal point on the curve is reached
+    // See where we are on the curve
     now = std::chrono::system_clock::now();
     timeDif = now - startTime;
     int currentPoint = (int) round((timeDif.count()/totalTime*curve.positions.size()));
     currentPoint = currentPoint >= (int) curve.positions.size() ? (int) curve.positions.size() - 1 : currentPoint;
     currentPoint = currentPoint < 0 ? 0 : currentPoint;
 
-    // Calculate additional velocity due to position error
+    // Adjust velocity using PID
     Vector2 posError = curve.positions[currentPoint] - robot.pos;
-    //std::cout << "posError >> x: " << posError.x << "  y: " << posError.y << std::endl;
-
-//    pidEndTime = clock();
-//    pidVarsXPos.timeDiff = ((float) (pidEndTime - pidStartTime))/CLOCKS_PER_SEC;
-//    pidVarsYPos.timeDiff = ((float) (pidEndTime - pidStartTime))/CLOCKS_PER_SEC;
-//    pidStartTime = clock();
-
     Vector2 OutputPID = pidBezier.controlPIR2(posError, robot.vel);
-//    if (OutputPID.length() > 1) {
-//        OutputPID.stretchToLength(1);
-//    }
-
-//    float xOutputPID = control::ControlUtils::PIDcontroller((float) posError.x, pidVarsXPos);
-//    float yOutputPID = control::ControlUtils::PIDcontroller((float) posError.y, pidVarsYPos);
-
 
     curve.velocities[currentPoint].x += OutputPID.x;
     curve.velocities[currentPoint].y += OutputPID.y;
 
+    // Convert global to local
     double xVelocity =
             curve.velocities[currentPoint].x*cos(robot.angle) + curve.velocities[currentPoint].y*sin(robot.angle);
     double yVelocity =
@@ -135,20 +122,11 @@ bt::Node::Status GoToPosBezier::onUpdate() {
         std::cerr << std::endl;
         std::cerr << "------------------------" << std::endl;
 
-        //clock_t begin = clock();
         updateCurveData(currentPoint, isErrorTooLarge);
-        //clock_t end = clock();
-        //std::cout << "seconds to calculate new curve: " << (double)(end - begin)/CLOCKS_PER_SEC << std::endl;
     }
 
     // Now check the progress we made
     currentProgress = checkProgression();
-
-    if (currentProgress == DONE) {
-        curve.velocities.empty();
-        curve.positions.empty();
-        curve.angles.empty();
-    }
 
     switch (currentProgress) {
 
@@ -156,6 +134,7 @@ bt::Node::Status GoToPosBezier::onUpdate() {
     case ON_THE_WAY:return status::Running;
     case DONE: return status::Success;
     case FAIL: return status::Failure;
+    case INVALID: return status::Waiting;
     }
 
     return status::Failure;
@@ -179,15 +158,11 @@ void GoToPosBezier::sendMoveCommand(float desiredAngle, double xVelocity, double
     command.use_angle = 0;
     command.w = 0;
     //command.w = (float) control::ControlUtils::calculateAngularVelocity(robot.angle, desiredAngle);
-//    std::cout << "Current angle: " << robot.angle << std::endl;
-//    std::cout << "Desired angle: " << desiredAngle << std::endl;
 
     command.x_vel = (float) xVelocity;
     command.y_vel = (float) yVelocity;
 
     publishRobotCommand(command);
-    //std::cerr << "                  xvel: " << command.x_vel << ", yvel: " << command.y_vel << ", w_vel: " << command.w
-    //          << std::endl;
 }
 
 /// Check the progress the robot made and alter the currentProgress
@@ -227,6 +202,7 @@ void GoToPosBezier::terminate(status s) {
 /// Create robot coordinates vector & other parameters for the path
 void GoToPosBezier::updateCurveData(int currentPoint, bool isErrorTooLarge) {
     // TODO: don't hardcode end orientation & velocity
+    // Update world data
     auto world = World::get_world();
     if (World::getRobotForId(robotID, true)) {
         robot = *World::getRobotForId(robotID, true).get();
@@ -246,7 +222,6 @@ void GoToPosBezier::updateCurveData(int currentPoint, bool isErrorTooLarge) {
         robotCoordinates.emplace_back(theirBot.pos);
     }
 
-    //float startAngle = robotVel.x == 0 ? robot.angle : (float)robotVel.angle(); // If robotVel in x-dir is 0, robotVel.angle() will be NaN
     auto endAngle = (float) M_PI;
     float endVelocity = 0;
     Vector2 robotVel = robot.vel;
@@ -260,7 +235,6 @@ void GoToPosBezier::updateCurveData(int currentPoint, bool isErrorTooLarge) {
         startVelocity = (float) curve.velocities[currentPoint].length();
     }
 
-    //startPos = startPos + robotVel.scale(0.08); // Add prediction based on delay
     startAngle < 0 ? startAngle = startAngle + 2*(float) M_PI : startAngle;
     endAngle < 0 ? endAngle = endAngle + 2*(float) M_PI : endAngle;
 
@@ -277,7 +251,7 @@ void GoToPosBezier::updateCurveData(int currentPoint, bool isErrorTooLarge) {
 }
 
 bool GoToPosBezier::isAnyObstacleAtCurve(int currentPoint) {
-    double margin = 0.18;
+    double margin = 2*constants::ROBOT_RADIUS;
     auto world = World::get_world();
 
     Vector2 robotPos;
@@ -302,6 +276,5 @@ bool GoToPosBezier::isAnyObstacleAtCurve(int currentPoint) {
     }
     return false;
 }
-
 } // ai
 } // rtt
