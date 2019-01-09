@@ -90,7 +90,7 @@ bt::Node::Status GoToPosBezier::onUpdate() {
 
     // Adjust velocity using PID
     Vector2 posError = curve.positions[currentPoint] - robot.pos;
-    Vector2 OutputPID = pidBezier.controlPIR2(posError, robot.vel);
+    Vector2 OutputPID = pidBezier.controlPIR(posError, robot.vel);
 
     curve.velocities[currentPoint].x += OutputPID.x;
     curve.velocities[currentPoint].y += OutputPID.y;

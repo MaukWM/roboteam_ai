@@ -34,6 +34,7 @@ void runBehaviourTrees() {
     ros::Rate rate(rtt::ai::constants::tickRate); //50 Hz
 
     BTFactory::setCurrentTree("SimpleStrategy");
+    double longestTick = 0.0;
 
     // Main loop
     while (ros::ok()) {
@@ -72,7 +73,7 @@ void runBehaviourTrees() {
 
         std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
         if (time_span.count() > longestTick) {
-            std::cout << "longest tick took: " << time_span.count()*1000 << "ms." << std::endl;
+//            std::cout << "longest tick took: " << time_span.count()*1000 << "ms." << std::endl;
             longestTick = time_span.count();
         }
         //std::cout << "Tick took:  " << time_span.count()*1000 << " ms." << std::endl;
