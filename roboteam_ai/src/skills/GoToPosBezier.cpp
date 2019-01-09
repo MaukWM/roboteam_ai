@@ -113,14 +113,14 @@ bt::Node::Status GoToPosBezier::onUpdate() {
 
     // Calculate new curve if needed
     if (isAtEnd || isErrorTooLarge || hasTargetChanged || isAnyObstacleAtCurve(currentPoint)) {
-        std::cerr << "------------------------" << std::endl;
-        std::cerr << "       NEW CURVE \n Reason: ";
-        if (isAtEnd) { std::cerr << "End of curve | "; }
-        if (isErrorTooLarge) { std::cerr << "Error too large | "; }
-        if (hasTargetChanged) { std::cerr << "Target changed | "; }
-        if (isAnyObstacleAtCurve(currentPoint)) { std::cerr << "Obstacle on curve | "; }
-        std::cerr << std::endl;
-        std::cerr << "------------------------" << std::endl;
+//        std::cerr << "------------------------" << std::endl;
+//        std::cerr << "       NEW CURVE \n Reason: ";
+//        if (isAtEnd) { std::cerr << "End of curve | "; }
+//        if (isErrorTooLarge) { std::cerr << "Error too large | "; }
+//        if (hasTargetChanged) { std::cerr << "Target changed | "; }
+//        if (isAnyObstacleAtCurve(currentPoint)) { std::cerr << "Obstacle on curve | "; }
+//        std::cerr << std::endl;
+//        std::cerr << "------------------------" << std::endl;
 
         updateCurveData(currentPoint, isErrorTooLarge);
     }

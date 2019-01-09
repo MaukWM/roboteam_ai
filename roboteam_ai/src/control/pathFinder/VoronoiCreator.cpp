@@ -88,8 +88,8 @@ VoronoiCreator::parameters VoronoiCreator::createVoronoi(const arma::Mat<float> 
     std::pair<std::pair<float, float>, std::pair<int, int>> endOrientationParameters =
             orientationNodeCreator(endID, anglesEnd, endOrientationAngle, circleCenters, objectCoordinates);
 
-    std::cout << startOrientationParameters.first.first << " " << startOrientationParameters.first.second << std::endl;
-    std::cout << endOrientationParameters.first.first << " " << endOrientationParameters.first.second << std::endl;
+//    std::cout << startOrientationParameters.first.first << " " << startOrientationParameters.first.second << std::endl;
+//    std::cout << endOrientationParameters.first.first << " " << endOrientationParameters.first.second << std::endl;
 
     std::pair<float, float> startOrientationNode = startOrientationParameters.first;
     std::pair<float, float> endOrientationNode = endOrientationParameters.first;
