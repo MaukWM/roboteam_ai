@@ -33,7 +33,7 @@ void runBehaviourTrees() {
     // Start running this tree first
     ros::Rate rate(rtt::ai::constants::tickRate); //50 Hz
 
-    factory.setCurrentTree("randomStrategyBezier");
+    BTFactory::setCurrentTree("SimpleStrategy");
 
     // Main loop
     while (ros::ok()) {
@@ -65,13 +65,17 @@ void runBehaviourTrees() {
 
         strategy = factory.getTree(BTFactory::getCurrentTree());
 
-//
-//        std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+
+        std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
         Status status = strategy->tick();
-//        std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
-//
-//        std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
-//        std::cout << "Tick took:  " << time_span.count()*1000 << " ms." << std::endl;
+        std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+
+        std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
+        if (time_span.count() > longestTick) {
+            std::cout << "longest tick took: " << time_span.count()*1000 << "ms." << std::endl;
+            longestTick = time_span.count();
+        }
+        //std::cout << "Tick took:  " << time_span.count()*1000 << " ms." << std::endl;
 
         switch (status) {
             case Status::Running:

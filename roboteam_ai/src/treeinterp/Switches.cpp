@@ -27,7 +27,7 @@
 #include "../skills/Chip.h"
 #include "../skills/Dribble.h"
 #include "../skills/GoToPosLuTh.h"
-#include "../skills/GoToPosLuTh_OLD.h"
+#include "roboteam_ai/src/skills/SkillGoToPos.h"
 #include "../skills/Halt.h"
 #include "../skills/Kick.h"
 #include "../skills/Harass.h"
@@ -51,6 +51,8 @@
 #include <roboteam_ai/src/conditions/TheyHaveBall.h>
 #include <roboteam_ai/src/conditions/IsRobotClosestToBall.h>
 #include <roboteam_ai/src/conditions/BallKickedToOurGoal.h>
+#include <roboteam_ai/src/skills/InterceptBall.h>
+#include "Switches.h"
 
 /**
  * When you want to add a new class to the ai, you need to change this file so the first two vector have the FILE NAMES
@@ -72,7 +74,10 @@ std::vector<std::string> Switches::tacticJsonFileNames =
          "Attactic",
          "SimpleDefendTactic",
          "KeeperTactic",
-         "randomTacticBezier"};
+         "randomTacticBezier",
+         "SimpleDefendTactic_1",
+         "KeeperTactic",
+         "KeeperTestTactic"};
 
 std::vector<std::string> Switches::strategyJsonFileNames =
         {"victoryDanceStrategy",
@@ -82,6 +87,7 @@ std::vector<std::string> Switches::strategyJsonFileNames =
          "SimpleStrategy",
          "haltStrategy",
          "SimpleDefendStrategy",
+         "SimpleDefendStrategy_1",
          "AttackStrategy",
          "KeeperStrategy",
          "randomStrategyBezier"};
@@ -157,8 +163,8 @@ bt::Node::Ptr Switches::leafSwitch(std::string name, bt::Blackboard::Ptr propert
     else if (name == "Rotate") {
         node = std::make_shared<rtt::ai::Rotate>(name, properties);
     }
-    else if (name == "GoToPosLuTh_OLD") {
-        node = std::make_shared<rtt::ai::GoToPosLuTh_OLD>(name, properties);
+    else if (name == "SkillGoToPos") {
+        node = std::make_shared<rtt::ai::SkillGoToPos>(name, properties);
     }
     else if (name == "GoToPosLuTh") {
         node = std::make_shared<rtt::ai::GoToPosLuTh>(name, properties);
@@ -270,6 +276,10 @@ bt::Node::Ptr Switches::tacticSwitch(std::string name, bt::Blackboard::Ptr prope
                     {"simpleDefender3", robotType::closeToOurGoal}
             }
             },
+            {"SimpleDefendTactic_1", {
+                {"simpleDefender1", robotType::closeToOurGoal}
+            }
+            },
             {"Attactic", {
                     {"atak", robotType::random}
                     //{"atak", robotType::closeToBall},
@@ -277,6 +287,11 @@ bt::Node::Ptr Switches::tacticSwitch(std::string name, bt::Blackboard::Ptr prope
             },
             {"KeeperTactic", {
                         {"keeper", robotType::random}
+            }
+            },
+            {"KeeperTestTactic", {
+                    {"keeper", robotType::random},
+                    {"Attacker", robotType::random}
             }
             }
     };

@@ -4,7 +4,6 @@
 
 #include "Attack.h"
 
-
 namespace rtt {
 namespace ai {
 
@@ -21,30 +20,30 @@ void Attack::onInitialize() {
 bt::Node::Status Attack::onUpdate() {
     updateRobot();
     if (! robot) return Status::Running;
+    Vector2 ball = World::getBall().pos;
+    Vector2 behindBall = Coach::getPositionBehindBall(0.5);
+    Vector2 deltaBall = behindBall - ball;
+    if (! Control::pointInTriangle(robot->pos, ball-deltaBall, ball + (deltaBall).rotate(M_PI*0.17).scale(2.0),
+            ball + (deltaBall).rotate(M_PI*- 0.17).scale(2.0))) {
+        targetPos = behindBall;
+        goToPos.goToPos(robot, targetPos, GoToType::luTh);
+        std::cout << "luth\n";
+    }
+    else {
+        roboteam_msgs::RobotCommand command;
+        command.id = robot->id;
+        command.use_angle = 1;
+        command.w = static_cast<float>((ball - behindBall).angle());
+        publishRobotCommand(command);
+        targetPos = ball;
+        goToPos.goToPos(robot, targetPos, GoToType::basic);
 
-        if (newRandom && newPos) {
-            const roboteam_msgs::GeometryFieldSize &field = Field::get_field();
-            const double &length = field.field_length;
-            const double &width = field.field_width;
-            int randomX = std::rand();
-            int randomY = std::rand();
-            targetPos = {randomX*2.32830644e-10*length*2 - length*0.5, randomY*2.32830644e-10*width*2 - width*0.5};
-
-            newPos = false;
+        if (Coach::doesRobotHaveBall(robot->id, true)) {
+            unsigned char forced_kick = 1;
+            kicker.kick(robot, forced_kick);
         }
-        else if (! newRandom && newPos) {
-            auto ball = World::getBall();
-            targetPos = ball.pos;
-        }
+        std::cout << "basic\n";
 
-    goToPos.goToPos(robot, targetPos, goToType::luTh);
-
-    deltaPos = targetPos - (Vector2)robot->pos;
-    if (abs(deltaPos.length()) < 0.5 && --counter < 1) {
-        newPos = true;
-        newRandom = !newRandom;
-        counter = 100;
-        goToPos.clear(goToType::luTh);
     }
 
     return Status::Running;
