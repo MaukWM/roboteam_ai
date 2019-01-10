@@ -14,13 +14,17 @@ class VoronoiData {
     public:
         static void bezierMain();
         static bezier getData();
+        static roboteam_msgs::World getLastWorld();
 
 
     private:
         static bezier currentData;
-        static void setData(bezier newData);
+        static roboteam_msgs::World lastWorld;
+        static void setData(bezier newData, roboteam_msgs::World world);
         static std::mutex loki;
-        static arma::Mat<float> makeMatrix();
+        static std::mutex worldLock;
+
+        static arma::Mat<float> makeMatrix(roboteam_msgs::World world);
 };
 }
 }

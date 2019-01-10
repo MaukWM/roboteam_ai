@@ -15,9 +15,9 @@ void PathFinder::calculatePath(Vector2 endPosition, Vector2 startPosition, float
         float startVelocity,
         float endVelocity, std::vector<Vector2> robotCoordinates) {
 
-    // Set start & end ID: always these values
-    int startID = 0;
-    int endID = 1;
+    // Set end ID: always these values
+    int endID = 0;
+    int startID = 1;
 
     // Add start & end position to objects
     std::vector<Vector2> objectCoordinatesVector;
@@ -34,8 +34,8 @@ void PathFinder::calculatePath(Vector2 endPosition, Vector2 startPosition, float
     std::vector<float> xEdges = {- fieldWidth/2 - safetyMargin, fieldWidth/2 + safetyMargin};
     for (float x: xEdges) {
         float y;
-        for (int i = 0; i < nSteps; i++) {
-            y = i * fieldLength/nSteps - fieldLength/2;
+        for (int i = 0; i < nSteps; i ++) {
+            y = i*fieldLength/nSteps - fieldLength/2;
             objectCoordinatesVector.emplace_back(Vector2(x, y));
         }
     }
@@ -43,8 +43,8 @@ void PathFinder::calculatePath(Vector2 endPosition, Vector2 startPosition, float
     std::vector<float> yEdges = {- fieldLength/2 - safetyMargin, fieldLength/2 + safetyMargin};
     for (float y: yEdges) {
         float x;
-        for (int i = 0; i < nSteps; i++) {
-            x = i * fieldWidth/nSteps - fieldWidth/2;
+        for (int i = 0; i < nSteps; i ++) {
+            x = i*fieldWidth/nSteps - fieldWidth/2;
             objectCoordinatesVector.emplace_back(Vector2(x, y));
         }
     }
@@ -55,29 +55,27 @@ void PathFinder::calculatePath(Vector2 endPosition, Vector2 startPosition, float
     // Change object vector to matrix
     arma::Mat<float> temp;
     arma::Mat<float> objectCoordinatesMatrix;
-    for (auto i = (int)objectCoordinatesVector.size() - 1; i > - 1; i --) {
+    for (auto i = (int) objectCoordinatesVector.size() - 1; i > - 1; i --) {
         temp << objectCoordinatesVector[i].x << objectCoordinatesVector[i].y << arma::endr;
         objectCoordinatesMatrix.insert_rows(0, temp);
     }
 
     // Create Voronoi diagram
-
-
-
-    auto voronoi = VoronoiData::getData();
+    auto voronoiData = VoronoiData::getData();
+    auto lastWorld = VoronoiData::getLastWorld();
 
     VoronoiCreator voronoiCreator;
-    VoronoiCreator::parameters voronoiParameters = voronoiCreator.createVoronoi(objectCoordinatesMatrix,
-            startAngle, endAngle, voronoi);
+    VoronoiCreator::parameters voronoi = voronoiCreator.createVoronoi(startAngle, endAngle, voronoiData,
+            lastWorld);
 
+    interface::Drawer::setVoronoiDiagram(voronoi.segments, voronoi.nodes);
 
-
-    // TODO: add orientation
+    sleep(1);
 
     // Find the shortest path through the diagram
     FindShortestPath shortestPathFinder;
-    path = shortestPathFinder.calculateShortestPath(voronoiParameters.nodes,
-            voronoiParameters.segments, startID, endID, objectCoordinatesVector, startAngle, endAngle);
+    path = shortestPathFinder.calculateShortestPath(voronoi.nodes,
+            voronoi.segments, startID, endID, objectCoordinatesVector, startAngle, endAngle);
 
     // Create a curve across this path
     CurveCreator curveCreator;
@@ -90,7 +88,7 @@ void PathFinder::calculatePath(Vector2 endPosition, Vector2 startPosition, float
     totalTime = curveCreator.getTotalTime();
 
     // Update the interface with Bezier
-    interface::Drawer::setVoronoiDiagram(voronoiParameters.segments, voronoiParameters.nodes);
+    interface::Drawer::setVoronoiDiagram(voronoi.segments, voronoi.nodes);
     interface::Drawer::setBezierCurve(curvePoints);
 }
 

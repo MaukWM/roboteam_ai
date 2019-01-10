@@ -5,9 +5,9 @@
 #ifndef ROBOTEAM_ai_VORONOICREATOR_H
 #define ROBOTEAM_ai_VORONOICREATOR_H
 
-#include "roboteam_msgs/World.h"
 #include <roboteam_msgs/GeometryData.h>
 #include <armadillo>
+#include "../../utilities/World.h"
 #include "roboteam_utils/Vector2.h"
 #include <cfloat>
 #include "../../utilities/Field.h"
@@ -16,8 +16,8 @@ namespace rtt {
 namespace ai {
 class VoronoiCreator {
     private:
-        // Functions
 
+        // Functions
         static void lineFromPoints(std::pair<float, float> P, std::pair<float, float> Q, double &a, double &b,
                 double &c);
 
@@ -32,14 +32,14 @@ class VoronoiCreator {
         static std::pair<arma::Mat<int>, arma::Mat<int>> startEndSegmentCreator(arma::Mat<int> triangleCombinations,
                 arma::Mat<float> circleCenters, int startID, int endID);
 
-        static arma::Mat<float> angleCalculator(int inp, arma::Mat<float> objectCoordidnates,
+        static arma::Mat<float> angleCalculator(int inp, arma::Mat<float> objectCoordinates,
                 arma::Mat<float> circleCenters,
                 arma::Mat<int> voronoiSegments);
 
         static std::pair<std::pair<float, float>, std::pair<int, int>> orientationNodeCreator(int inp,
                 arma::Mat<float> angles,
                 float orientationAngle,
-                arma::Mat<float> circleCenters, arma::Mat<float> objectCoordinates);
+                arma::Mat<float> circleCenters, arma::Mat<float> objectCoordinates, int startID, int endID);
 
         static arma::Mat<float> removeIfInDefenceArea(arma::Mat<float> circleCenters, int startID, int endID);
 
@@ -47,6 +47,11 @@ class VoronoiCreator {
 
         static int findClosestPoint(std::pair<float, float> node, arma::Mat<float> circleCenters);
 
+        //
+        roboteam_msgs::WorldRobot robot;
+        std::vector<Vector2> startPoint;
+        int startID;
+        const int endID = 0; // don't touch
 
     public:
         static arma::Mat<int> possibleCombinations(arma::Mat<float> objectCoordinates);
@@ -64,14 +69,15 @@ class VoronoiCreator {
           arma::Mat<float> nodes;
           arma::Mat<int> segments;
           arma::Mat<int> triangles;
+          arma::Mat<float> objects;
         };
 
         void voronoiMain(arma::Mat<float> objectCoordinates,
                 float startOrientationAngle,
                 float endOrientationAngle);
 
-        parameters createVoronoi(arma::Mat<float> objectCoordinates,
-                float startOrientationAngle, float endOrientationAngle, parameters voronoiParameters);
+        parameters createVoronoi(float startOrientationAngle, float endOrientationAngle, parameters voronoi,
+                roboteam_msgs::World world);
 
 };
 }

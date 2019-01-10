@@ -99,9 +99,9 @@ bt::Node::Status GoToPosBezier::onUpdate() {
     double xVelocity =
             curve.velocities[currentPoint].x*cos(robot.angle) + curve.velocities[currentPoint].y*sin(robot.angle);
     double yVelocity =
-            curve.velocities[currentPoint].x* -sin(robot.angle) + curve.velocities[currentPoint].y*cos(robot.angle);
+            curve.velocities[currentPoint].x*- sin(robot.angle) + curve.velocities[currentPoint].y*cos(robot.angle);
 
-    auto desiredAngle = (float)M_PI;
+    auto desiredAngle = (float) M_PI;
 
     // Send a move command
     sendMoveCommand(desiredAngle, xVelocity, yVelocity);
@@ -212,6 +212,7 @@ void GoToPosBezier::updateCurveData(int currentPoint, bool isErrorTooLarge) {
         currentProgress = Progression::INVALID;
         return;
     }
+
     std::vector<Vector2> robotCoordinates;
     for (auto ourBot: world.us) {
         if (ourBot.id != robot.id) {

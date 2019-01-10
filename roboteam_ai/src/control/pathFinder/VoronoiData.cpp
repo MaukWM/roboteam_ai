@@ -1,3 +1,5 @@
+#include <utility>
+
 #include <roboteam_ai/src/utilities/World.h>
 
 //
@@ -14,13 +16,16 @@ using bezier = rtt::ai::VoronoiCreator::parameters;
 
 bezier VoronoiData::currentData;
 std::mutex VoronoiData::loki;
+std::mutex VoronoiData::worldLock;
+roboteam_msgs::World VoronoiData::lastWorld;
 
 void VoronoiData::bezierMain() {
 
     while (true) {
 
         // get the world data
-        auto objectCoordinates = VoronoiData::makeMatrix();
+        auto world = World::get_world();
+        auto objectCoordinates = VoronoiData::makeMatrix(world);
 
         // calculate
         // Calculate all possible triangle combinations
@@ -46,10 +51,11 @@ void VoronoiData::bezierMain() {
         voronoiParameters.nodes = circleCenters;
         voronoiParameters.segments = adjacent.second;
         voronoiParameters.triangles = triangleCombinations;
+        voronoiParameters.objects = objectCoordinates;
 
         // set
         //locks
-        setData(voronoiParameters);
+        setData(voronoiParameters, world);
 
         // TODO make money, get bitchez
 
@@ -64,14 +70,13 @@ VoronoiData::bezier VoronoiData::getData() {
 }
 
 // Internal use
-void VoronoiData::setData(VoronoiData::bezier newData) {
+void VoronoiData::setData(VoronoiData::bezier newData, roboteam_msgs::World world) {
     std::lock_guard<std::mutex> lock(loki);
     currentData = std::move(newData);
-
+    std::lock_guard<std::mutex> wLock(worldLock);
+    lastWorld = std::move(world);
 }
-arma::Mat<float> VoronoiData::makeMatrix() {
-
-    auto world = World::get_world();
+arma::Mat<float> VoronoiData::makeMatrix(const roboteam_msgs::World world) {
 
     std::vector<Vector2> robotCoordinates;
     for (auto ourBot: world.us) {
@@ -126,6 +131,10 @@ arma::Mat<float> VoronoiData::makeMatrix() {
     std::cout << objectCoordinatesMatrix << std::endl;
 
     return objectCoordinatesMatrix;
+}
+roboteam_msgs::World VoronoiData::getLastWorld() {
+    std::lock_guard<std::mutex> lock(worldLock);
+    return lastWorld;
 }
 
 }
