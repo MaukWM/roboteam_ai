@@ -14,22 +14,38 @@ VoronoiCreator::parameters VoronoiCreator::createVoronoi(const arma::Mat<float> 
         const float startOrientationAngle,
         const float endOrientationAngle) {
 
-    // Set ID of the start and end point
-    const int startID = 0; // always
-    const int endID = 1;
+    std::chrono::high_resolution_clock::time_point time1 = std::chrono::high_resolution_clock::now();
 
+    /// Needed for diagram
     // Calculate all possible triangle combinations
     arma::Mat<int> triangleCombinations = possibleCombinations(objectCoordinates);
 
+    /// Needed for diagram
     // Calculate the radius and center of each triangle
     std::pair<arma::Mat < float>, arma::Mat < float >> circleParameters = findCircumcircles(triangleCombinations,
             objectCoordinates);
 
+    /// Needed for diagram
     // Make triangles Delaunay
     std::pair<arma::Mat < float>, arma::Mat < int >> delaunayTriangles = delaunayFilter(objectCoordinates,
             circleParameters.first, circleParameters.second, triangleCombinations);
     arma::Mat<float> circleCenters = delaunayTriangles.first;
     triangleCombinations = delaunayTriangles.second;
+
+    /// Needed for diagram
+    // Find triangles that share a side
+    // First = triangles, second = centers
+    std::pair<arma::Mat < int>, arma::Mat < int >> adjacent = findAdjacentCenter(triangleCombinations);
+
+    std::chrono::high_resolution_clock::time_point time2 = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(time2 - time1);
+    std::cout << "time:  " << time_span.count() * 1000 << std::endl;
+
+
+    /// All orientation stuff
+    // Set ID of the start and end point
+    const int startID = 0; // always
+    const int endID = 1;
 
     // Add start & end point to circleCenters
     arma::Mat<float> startPoint(1, 2);
@@ -49,10 +65,6 @@ VoronoiCreator::parameters VoronoiCreator::createVoronoi(const arma::Mat<float> 
     arma::mat temp = getIndexColumn((int) circleCenters.n_rows);
     arma::Mat<float> indexCenters = arma::conv_to < arma::Mat < float >> ::from(temp);
     circleCenters.insert_cols(0, indexCenters);
-
-    // Find triangles that share a side
-    // First = triangles, second = centers
-    std::pair<arma::Mat < int>, arma::Mat < int >> adjacent = findAdjacentCenter(triangleCombinations);
 
     // Create lines from the start & end point to the centers within that polygon
     // First = start, second = end

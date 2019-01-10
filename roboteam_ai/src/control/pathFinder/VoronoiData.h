@@ -9,17 +9,18 @@
 namespace rtt {
 namespace ai {
 class VoronoiData {
-    public:
         using bezier = rtt::ai::VoronoiCreator::parameters;
+
+    public:
         static void bezierMain();
         static bezier getData();
 
 
     private:
         static bezier currentData;
-        void setData(bezier newData);
+        static void setData(bezier newData);
         static std::mutex lockie;
-
+        static arma::Mat<float> makeMatrix();
 };
 }
 }

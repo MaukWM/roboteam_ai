@@ -1,4 +1,5 @@
 #include <utility>
+#include <roboteam_ai/src/utilities/World.h>
 
 //
 // Created by baris on 9-1-19.
@@ -6,24 +7,104 @@
 
 #include "VoronoiData.h"
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wmissing-noreturn"
 namespace rtt {
 namespace ai {
+using bezier = rtt::ai::VoronoiCreator::parameters;
+
+bezier VoronoiData::currentData;
+std::mutex VoronoiData::lockie;
 
 void VoronoiData::bezierMain() {
+
+    while (true) {
+
+        // get the world data
+        auto worldData = VoronoiData::makeMatrix();
+
+        // calculate
+
+        // set
+
+        // make money, get bitchez
+
+    }
 
 }
 
 VoronoiData::bezier VoronoiData::getData() {
+
+
     std::lock_guard<std::mutex> lock(lockie);
     return currentData;
 }
 
+// Internal use
 void VoronoiData::setData(VoronoiData::bezier newData) {
     std::lock_guard<std::mutex> lock(lockie);
     currentData = std::move(newData);
 
 }
+arma::Mat<float> VoronoiData::makeMatrix() {
+
+    auto world = World::get_world();
+
+    std::vector<Vector2> robotCoordinates;
+    for (auto ourBot: world.us) {
+            robotCoordinates.emplace_back(ourBot.pos);
+    }
+    for (auto theirBot: world.them) {
+        robotCoordinates.emplace_back(theirBot.pos);
+    }
+
+    auto ball = World::getBall();
+    auto endPosition = ball.pos;
+
+    // Add start & end position to objects
+    std::vector<Vector2> objectCoordinatesVector;
+    objectCoordinatesVector.emplace_back(endPosition);
+
+
+    float safetyMargin = 0.1; // m TODO from parameter list; distance between field and field border
+    int nSteps = 5; // determines amount of safety points
+
+    float fieldWidth = Field::get_field().field_width;
+    float fieldLength = Field::get_field().field_length;
+
+    std::vector<float> xEdges = {- fieldWidth/2 - safetyMargin, fieldWidth/2 + safetyMargin};
+    for (float x: xEdges) {
+        float y;
+        for (int i = 0; i < nSteps; i++) {
+            y = i * fieldLength/nSteps - fieldLength/2;
+            objectCoordinatesVector.emplace_back(Vector2(x, y));
+        }
+    }
+
+    std::vector<float> yEdges = {- fieldLength/2 - safetyMargin, fieldLength/2 + safetyMargin};
+    for (float y: yEdges) {
+        float x;
+        for (int i = 0; i < nSteps; i++) {
+            x = i * fieldWidth/nSteps - fieldWidth/2;
+            objectCoordinatesVector.emplace_back(Vector2(x, y));
+        }
+    }
+
+    // Add robot coordinates
+    objectCoordinatesVector.insert(objectCoordinatesVector.end(), robotCoordinates.begin(), robotCoordinates.end());
+
+    // Change object vector to matrix
+    arma::Mat<float> temp;
+    arma::Mat<float> objectCoordinatesMatrix;
+    for (auto i = (int)objectCoordinatesVector.size() - 1; i > - 1; i --) {
+        temp << objectCoordinatesVector[i].x << objectCoordinatesVector[i].y << arma::endr;
+        objectCoordinatesMatrix.insert_rows(0, temp);
+    }
+    return objectCoordinatesMatrix;
+}
 
 }
 }
 
+
+#pragma clang diagnostic pop
