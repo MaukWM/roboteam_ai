@@ -245,7 +245,7 @@ set(PATHFINDER_SOURCES
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/control/pathFinder/CurveCreator.h
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/control/pathFinder/CurvatureOptimizer.h
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/control/pathFinder/CurvatureOptimizer.cpp
-        )
+        roboteam_ai/src/control/pathFinder/VoronoiData.cpp roboteam_ai/src/control/pathFinder/VoronoiData.h)
 
 ### SOURCES END ###
 

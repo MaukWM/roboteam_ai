@@ -6,6 +6,8 @@
 #include "treeinterp/BTFactory.h"
 #include "interface/mainWindow.h"
 #include <QApplication>
+#include <roboteam_ai/src/control/pathFinder/VoronoiCreator.h>
+#include <roboteam_ai/src/control/pathFinder/VoronoiData.h>
 
 namespace df = rtt::ai::dangerfinder;
 namespace io = rtt::ai::io;
@@ -14,7 +16,11 @@ namespace ui = rtt::ai::interface;
 
 using Status = bt::Node::Status;
 
+using bezier = rtt::ai::VoronoiCreator::parameters;
+
 std::shared_ptr<ui::MainWindow> window;
+
+
 
 void runBehaviourTrees() {
     // init IOManager and subscribe to all topics immediately
@@ -104,12 +110,23 @@ void runBehaviourTrees() {
     }
 }
 
+void voronoiMain() {
+
+    rtt::ai::VoronoiData::bezierMain();
+}
+
+
 int main(int argc, char* argv[]) {
     // Init ROS node in main thread
     ros::init(argc, argv, "StrategyNode");
 
     // start the ros loop in separate thread
     std::thread behaviourTreeThread = std::thread(&runBehaviourTrees);
+
+
+    // Voronoi stuff
+
+    std::thread voronoiCalculator = std::thread(&voronoiMain);
 
     // initialize the interface
     QApplication a(argc, argv);
@@ -118,4 +135,6 @@ int main(int argc, char* argv[]) {
 
     return a.exec();
 }
+
+
 

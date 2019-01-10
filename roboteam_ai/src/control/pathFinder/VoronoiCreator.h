@@ -55,12 +55,15 @@ class VoronoiCreator {
 
     public:
         VoronoiCreator();
-
         // Struct
         struct parameters {
           arma::Mat<float> nodes;
           arma::Mat<int> segments;
         };
+
+        void voronoiMain(arma::Mat<float> objectCoordinates,
+                float startOrientationAngle,
+                float endOrientationAngle);
 
         parameters createVoronoi(arma::Mat<float> objectCoordinates,
                 float startOrientationAngle, float endOrientationAngle);

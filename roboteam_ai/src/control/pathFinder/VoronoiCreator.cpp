@@ -7,8 +7,7 @@
 namespace rtt {
 namespace ai {
 
-VoronoiCreator::VoronoiCreator() {
-}
+VoronoiCreator::VoronoiCreator() = default;
 
 // Create Voronoi diagram
 VoronoiCreator::parameters VoronoiCreator::createVoronoi(const arma::Mat<float> objectCoordinates,
@@ -47,7 +46,7 @@ VoronoiCreator::parameters VoronoiCreator::createVoronoi(const arma::Mat<float> 
 
     // Add column with 1 to amount of centers to circleCenter for indexing purposes
     // Convert index column to float
-    arma::mat temp = getIndexColumn(circleCenters.n_rows);
+    arma::mat temp = getIndexColumn((int) circleCenters.n_rows);
     arma::Mat<float> indexCenters = arma::conv_to < arma::Mat < float >> ::from(temp);
     circleCenters.insert_cols(0, indexCenters);
 
@@ -66,7 +65,7 @@ VoronoiCreator::parameters VoronoiCreator::createVoronoi(const arma::Mat<float> 
     voronoiSegments.insert_rows(voronoiSegments.n_rows, startEndSegments.second);
 
     // Add index column to voronoiSegments
-    temp = getIndexColumn(voronoiSegments.n_rows);
+    temp = getIndexColumn((int) voronoiSegments.n_rows);
     arma::Mat<int> indexSegments = arma::conv_to < arma::Mat < int >> ::from(temp);
     voronoiSegments.insert_cols(0, indexSegments);
 
@@ -79,7 +78,7 @@ VoronoiCreator::parameters VoronoiCreator::createVoronoi(const arma::Mat<float> 
     arma::Mat<float> anglesEnd = angleCalculator(endID, objectCoordinates, circleCenters, startEndSegments.second);
 
     // Remove start/end segments from segment list
-    int amountOfRows = startEndSegments.first.n_rows + startEndSegments.second.n_rows;
+    int amountOfRows = static_cast<int>(startEndSegments.first.n_rows + startEndSegments.second.n_rows);
     voronoiSegments.shed_rows(voronoiSegments.n_rows - amountOfRows, voronoiSegments.n_rows - 1);
 
     // Calculate orientation nodes
@@ -296,7 +295,7 @@ VoronoiCreator::delaunayFilter(const arma::Mat<float> objectCoordinates, arma::M
 
         // TODO: use 'don't use corners of triangle to remove rows'
         for (int k = 0; k < objectCoordinates.n_rows; k ++) {
-            double ocX = objectCoordinates(k, 0); // objectcoordinate = oc
+            double ocX = objectCoordinates(k, 0); // object coordinate = oc
             double ocY = objectCoordinates(k, 1);
             double distance = sqrt(pow(ccX - ocX, 2) + pow(ccY - ocY, 2));
             float threshold = 0.0001;
@@ -469,7 +468,7 @@ VoronoiCreator::angleCalculator(const int inp, const arma::Mat<float> objectCoor
     }
 
     for (int i = 0; i < polygonCoordinates.size(); i ++) {
-        float angle = (float) atan((polygonCoordinates[i].y - ptY)/(polygonCoordinates[i].x - ptX));
+        auto angle = (float) atan((polygonCoordinates[i].y - ptY)/(polygonCoordinates[i].x - ptX));
         temp << angle << indexVec[i] << arma::endr;
 
         angles.insert_rows(p, temp);
@@ -683,6 +682,11 @@ int VoronoiCreator::findClosestPoint(std::pair<float, float> node, arma::Mat<flo
     int closestPoint = distance.index_min();
 
     return closestPoint;
+}
+void VoronoiCreator::voronoiMain(const arma::Mat<float> objectCoordinates, const float startOrientationAngle,
+        const float endOrientationAngle) {
+
+
 }
 
 } // ai
