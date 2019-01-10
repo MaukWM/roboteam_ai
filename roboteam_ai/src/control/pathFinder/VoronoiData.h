@@ -19,7 +19,7 @@ class VoronoiData {
     private:
         static bezier currentData;
         static void setData(bezier newData);
-        static std::mutex lockie;
+        static std::mutex loki;
         static arma::Mat<float> makeMatrix();
 };
 }

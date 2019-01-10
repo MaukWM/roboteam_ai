@@ -3,6 +3,7 @@
 //
 
 #include "PathFinder.h"
+#include "VoronoiData.h"
 #include <time.h>
 
 namespace rtt {
@@ -61,21 +62,16 @@ void PathFinder::calculatePath(Vector2 endPosition, Vector2 startPosition, float
 
     // Create Voronoi diagram
 
-//    std::chrono::high_resolution_clock::time_point time1 = std::chrono::high_resolution_clock::now();
 
+
+    auto voronoi = VoronoiData::getData();
 
     VoronoiCreator voronoiCreator;
     VoronoiCreator::parameters voronoiParameters = voronoiCreator.createVoronoi(objectCoordinatesMatrix,
-            startAngle, endAngle);
-
+            startAngle, endAngle, voronoi);
 
 
     // TODO: add orientation
-
-//    std::chrono::high_resolution_clock::time_point time2 = std::chrono::high_resolution_clock::now();
-//    std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(time2 - time1);
-//    std::cout << "time:  " << time_span.count() * 1000 << std::endl;
-
 
     // Find the shortest path through the diagram
     FindShortestPath shortestPathFinder;

@@ -1,4 +1,3 @@
-#include <utility>
 #include <roboteam_ai/src/utilities/World.h>
 
 //
@@ -14,7 +13,7 @@ namespace ai {
 using bezier = rtt::ai::VoronoiCreator::parameters;
 
 bezier VoronoiData::currentData;
-std::mutex VoronoiData::lockie;
+std::mutex VoronoiData::loki;
 
 void VoronoiData::bezierMain() {
 
@@ -49,8 +48,10 @@ void VoronoiData::bezierMain() {
         voronoiParameters.triangles = triangleCombinations;
 
         // set
+        //locks
+        setData(voronoiParameters);
 
-        // make money, get bitchez
+        // TODO make money, get bitchez
 
     }
 
@@ -58,13 +59,13 @@ void VoronoiData::bezierMain() {
 
 VoronoiData::bezier VoronoiData::getData() {
 
-    std::lock_guard<std::mutex> lock(lockie);
+    std::lock_guard<std::mutex> lock(loki);
     return currentData;
 }
 
 // Internal use
 void VoronoiData::setData(VoronoiData::bezier newData) {
-    std::lock_guard<std::mutex> lock(lockie);
+    std::lock_guard<std::mutex> lock(loki);
     currentData = std::move(newData);
 
 }
