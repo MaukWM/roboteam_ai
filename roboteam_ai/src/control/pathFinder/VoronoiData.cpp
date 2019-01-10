@@ -122,6 +122,9 @@ arma::Mat<float> VoronoiData::makeMatrix() {
         temp << objectCoordinatesVector[i].x << objectCoordinatesVector[i].y << arma::endr;
         objectCoordinatesMatrix.insert_rows(0, temp);
     }
+
+    std::cout << objectCoordinatesMatrix << std::endl;
+
     return objectCoordinatesMatrix;
 }
 

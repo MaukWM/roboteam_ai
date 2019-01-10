@@ -3,6 +3,8 @@
 //
 
 #include "VoronoiCreator.h"
+#include "../../interface/drawer.h"
+
 
 namespace rtt {
 namespace ai {
@@ -56,13 +58,25 @@ VoronoiCreator::parameters VoronoiCreator::createVoronoi(const arma::Mat<float> 
     arma::Mat<int> indexSegments = arma::conv_to < arma::Mat < int >> ::from(temp);
     voronoiSegments.insert_cols(0, indexSegments);
 
+    std::cout << circleCenters << std::endl;
+
     // Remove nodes that are in the defence area or outside of the field
     circleCenters = removeIfInDefenceArea(circleCenters, startID, endID);
     circleCenters = removeIfOutOfField(circleCenters, startID, endID);
 
+//    std::cout << circleCenters << std::endl;
+    std::cout << voronoiSegments << std::endl;
+
+    interface::Drawer::setVoronoiDiagram(voronoiSegments, circleCenters);
+
+    sleep(50);
+
     // Calculate angle between start & end point and their centers on the surrounding polygon
     arma::Mat<float> anglesStart = angleCalculator(startID, objectCoordinates, circleCenters, startEndSegments.first);
     arma::Mat<float> anglesEnd = angleCalculator(endID, objectCoordinates, circleCenters, startEndSegments.second);
+
+//    std::cout << anglesStart << std::endl;
+    std::cout << anglesEnd << std::endl;
 
     // Remove start/end segments from segment list
     int amountOfRows = static_cast<int>(startEndSegments.first.n_rows + startEndSegments.second.n_rows);
@@ -449,6 +463,8 @@ VoronoiCreator::angleCalculator(const int inp, const arma::Mat<float> objectCoor
             }
         }
     }
+
+
 
     for (int i = 0; i < polygonCoordinates.size(); i ++) {
         auto angle = (float) atan((polygonCoordinates[i].y - ptY)/(polygonCoordinates[i].x - ptX));

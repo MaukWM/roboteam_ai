@@ -123,6 +123,7 @@ int main(int argc, char* argv[]) {
     // start the ros loop in separate thread
     std::thread behaviourTreeThread = std::thread(&runBehaviourTrees);
 
+    sleep(1);
 
     // Voronoi stuff
 
