@@ -21,9 +21,32 @@ void VoronoiData::bezierMain() {
     while (true) {
 
         // get the world data
-        auto worldData = VoronoiData::makeMatrix();
+        auto objectCoordinates = VoronoiData::makeMatrix();
 
         // calculate
+        // Calculate all possible triangle combinations
+        arma::Mat<int> triangleCombinations = VoronoiCreator::possibleCombinations(objectCoordinates);
+
+        // Calculate the radius and center of each triangle
+        std::pair<arma::Mat<float>, arma::Mat<float >> circleParameters = VoronoiCreator::findCircumcircles(
+                triangleCombinations,
+                objectCoordinates);
+
+        // Make triangles Delaunay
+        std::pair<arma::Mat<float>, arma::Mat<int >> delaunayTriangles = VoronoiCreator::delaunayFilter(
+                objectCoordinates,
+                circleParameters.first, circleParameters.second, triangleCombinations);
+        arma::Mat<float> circleCenters = delaunayTriangles.first;
+        triangleCombinations = delaunayTriangles.second;
+
+        // Find triangles that share a side
+        // First = triangles, second = centers
+        std::pair<arma::Mat<int>, arma::Mat<int >> adjacent = VoronoiCreator::findAdjacentCenter(triangleCombinations);
+
+        VoronoiCreator::parameters voronoiParameters;
+        voronoiParameters.nodes = circleCenters;
+        voronoiParameters.segments = adjacent.second;
+        voronoiParameters.triangles = triangleCombinations;
 
         // set
 
@@ -34,7 +57,6 @@ void VoronoiData::bezierMain() {
 }
 
 VoronoiData::bezier VoronoiData::getData() {
-
 
     std::lock_guard<std::mutex> lock(lockie);
     return currentData;
@@ -52,7 +74,7 @@ arma::Mat<float> VoronoiData::makeMatrix() {
 
     std::vector<Vector2> robotCoordinates;
     for (auto ourBot: world.us) {
-            robotCoordinates.emplace_back(ourBot.pos);
+        robotCoordinates.emplace_back(ourBot.pos);
     }
     for (auto theirBot: world.them) {
         robotCoordinates.emplace_back(theirBot.pos);
@@ -65,7 +87,6 @@ arma::Mat<float> VoronoiData::makeMatrix() {
     std::vector<Vector2> objectCoordinatesVector;
     objectCoordinatesVector.emplace_back(endPosition);
 
-
     float safetyMargin = 0.1; // m TODO from parameter list; distance between field and field border
     int nSteps = 5; // determines amount of safety points
 
@@ -75,8 +96,8 @@ arma::Mat<float> VoronoiData::makeMatrix() {
     std::vector<float> xEdges = {- fieldWidth/2 - safetyMargin, fieldWidth/2 + safetyMargin};
     for (float x: xEdges) {
         float y;
-        for (int i = 0; i < nSteps; i++) {
-            y = i * fieldLength/nSteps - fieldLength/2;
+        for (int i = 0; i < nSteps; i ++) {
+            y = i*fieldLength/nSteps - fieldLength/2;
             objectCoordinatesVector.emplace_back(Vector2(x, y));
         }
     }
@@ -84,8 +105,8 @@ arma::Mat<float> VoronoiData::makeMatrix() {
     std::vector<float> yEdges = {- fieldLength/2 - safetyMargin, fieldLength/2 + safetyMargin};
     for (float y: yEdges) {
         float x;
-        for (int i = 0; i < nSteps; i++) {
-            x = i * fieldWidth/nSteps - fieldWidth/2;
+        for (int i = 0; i < nSteps; i ++) {
+            x = i*fieldWidth/nSteps - fieldWidth/2;
             objectCoordinatesVector.emplace_back(Vector2(x, y));
         }
     }
@@ -96,7 +117,7 @@ arma::Mat<float> VoronoiData::makeMatrix() {
     // Change object vector to matrix
     arma::Mat<float> temp;
     arma::Mat<float> objectCoordinatesMatrix;
-    for (auto i = (int)objectCoordinatesVector.size() - 1; i > - 1; i --) {
+    for (auto i = (int) objectCoordinatesVector.size() - 1; i > - 1; i --) {
         temp << objectCoordinatesVector[i].x << objectCoordinatesVector[i].y << arma::endr;
         objectCoordinatesMatrix.insert_rows(0, temp);
     }
@@ -105,6 +126,5 @@ arma::Mat<float> VoronoiData::makeMatrix() {
 
 }
 }
-
 
 #pragma clang diagnostic pop

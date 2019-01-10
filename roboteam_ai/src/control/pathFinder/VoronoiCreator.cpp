@@ -12,34 +12,7 @@ VoronoiCreator::VoronoiCreator() = default;
 // Create Voronoi diagram
 VoronoiCreator::parameters VoronoiCreator::createVoronoi(const arma::Mat<float> objectCoordinates,
         const float startOrientationAngle,
-        const float endOrientationAngle) {
-
-    std::chrono::high_resolution_clock::time_point time1 = std::chrono::high_resolution_clock::now();
-
-    /// Needed for diagram
-    // Calculate all possible triangle combinations
-    arma::Mat<int> triangleCombinations = possibleCombinations(objectCoordinates);
-
-    /// Needed for diagram
-    // Calculate the radius and center of each triangle
-    std::pair<arma::Mat < float>, arma::Mat < float >> circleParameters = findCircumcircles(triangleCombinations,
-            objectCoordinates);
-
-    /// Needed for diagram
-    // Make triangles Delaunay
-    std::pair<arma::Mat < float>, arma::Mat < int >> delaunayTriangles = delaunayFilter(objectCoordinates,
-            circleParameters.first, circleParameters.second, triangleCombinations);
-    arma::Mat<float> circleCenters = delaunayTriangles.first;
-    triangleCombinations = delaunayTriangles.second;
-
-    /// Needed for diagram
-    // Find triangles that share a side
-    // First = triangles, second = centers
-    std::pair<arma::Mat < int>, arma::Mat < int >> adjacent = findAdjacentCenter(triangleCombinations);
-
-    std::chrono::high_resolution_clock::time_point time2 = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(time2 - time1);
-    std::cout << "time:  " << time_span.count() * 1000 << std::endl;
+        const float endOrientationAngle, parameters voronoiParameters) {
 
 
     /// All orientation stuff
@@ -51,6 +24,8 @@ VoronoiCreator::parameters VoronoiCreator::createVoronoi(const arma::Mat<float> 
     arma::Mat<float> startPoint(1, 2);
     startPoint << objectCoordinates(startID, 0) << objectCoordinates(startID, 1)
                << arma::endr;
+
+    auto circleCenters = voronoiParameters.nodes;
 
     circleCenters.insert_rows(0, startPoint);
 
@@ -68,11 +43,11 @@ VoronoiCreator::parameters VoronoiCreator::createVoronoi(const arma::Mat<float> 
 
     // Create lines from the start & end point to the centers within that polygon
     // First = start, second = end
-    std::pair<arma::Mat < int>, arma::Mat < int >> startEndSegments = startEndSegmentCreator(triangleCombinations,
+    std::pair<arma::Mat < int>, arma::Mat < int >> startEndSegments = startEndSegmentCreator(voronoiParameters.triangles,
             circleCenters, startID, endID);
 
     // Combine adjacentCenters and start & end segments to voronoiSegments
-    arma::Mat<int> voronoiSegments = adjacent.second;
+    arma::Mat<int> voronoiSegments = voronoiParameters.segments;
     voronoiSegments.insert_rows(voronoiSegments.n_rows, startEndSegments.first);
     voronoiSegments.insert_rows(voronoiSegments.n_rows, startEndSegments.second);
 
@@ -174,10 +149,6 @@ VoronoiCreator::parameters VoronoiCreator::createVoronoi(const arma::Mat<float> 
              << endOrientationSegments.second << arma::endr;
     voronoiSegments.insert_rows(voronoiSegments.n_rows, tempRow1);
 
-    // Change name for the rest of the calculations
-    parameters voronoiParameters;
-    voronoiParameters.nodes = circleCenters;
-    voronoiParameters.segments = voronoiSegments;
 
     return voronoiParameters;
 }
