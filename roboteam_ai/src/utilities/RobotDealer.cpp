@@ -59,7 +59,11 @@ void RobotDealer::updateFromWorld() {
 
     auto worldUs = rtt::ai::World::get_world().us;
     std::set<int> robots;
+
     for (auto robot : worldUs) {
+        if (robot.id == RobotDealer::keeperID) {
+            continue;
+        }
         robots.insert(robot.id);
     }
     std::set<int> currentRobots = RobotDealer::getRobots();
@@ -68,6 +72,12 @@ void RobotDealer::updateFromWorld() {
             std::lock_guard<std::mutex> lock(robotOwnersLock);
             RobotDealer::addRobotToOwnerList(robot, "free", "free");
         }
+    }
+
+    // Just make sure the keeper is there
+
+    if (RobotDealer::findRobotForRole("keeper") != RobotDealer::keeperID) {
+        RobotDealer::addRobotToOwnerList(RobotDealer::keeperID, "keeper", "keeper");
     }
 
 }
@@ -143,9 +153,9 @@ std::set<int> RobotDealer::getRobots() {
 
     std::set<int> ids;
 
-    for (auto tactic : robotOwners) {
+    for (const auto &tactic : robotOwners) {
         auto set = tactic.second;
-        for (auto pair : set) {
+        for (const auto &pair : set) {
             ids.insert(pair.first);
         }
     }
@@ -159,7 +169,7 @@ std::set<int> RobotDealer::getAvailableRobots() {
 
     auto set = robotOwners["free"];
     std::set<int> ids;
-    for (auto pair : set) {
+    for (const auto &pair : set) {
         ids.insert(pair.first);
     }
     return ids;
@@ -174,9 +184,9 @@ void RobotDealer::releaseRobotForRole(std::string roleName) {
     std::lock_guard<std::mutex> lock(robotOwnersLock);
 
     // Find the ID
-    for (auto tactic : robotOwners) {
+    for (const auto &tactic : robotOwners) {
         auto set = tactic.second;
-        for (auto pair : set) {
+        for (const auto &pair : set) {
             if (pair.second == roleName) {
                 removeRobotFromOwnerList(pair.first);
                 return;
@@ -190,9 +200,9 @@ void RobotDealer::removeTactic(std::string tacticName) {
 
     std::lock_guard<std::mutex> lock(robotOwnersLock);
 
-    for (auto tactic : robotOwners) {
+    for (const auto &tactic : robotOwners) {
         if (tactic.first == tacticName) {
-            for (auto robotPair : tactic.second) {
+            for (const auto &robotPair : tactic.second) {
                 removeRobotFromOwnerList(robotPair.first);
             }
             robotOwners.erase(tacticName);
@@ -206,9 +216,9 @@ std::set<int> RobotDealer::findRobotsForTactic(std::string tacticName) {
     std::lock_guard<std::mutex> lock(robotOwnersLock);
 
     std::set<int> ids;
-    for (auto tactic : robotOwners) {
+    for (const auto &tactic : robotOwners) {
         if (tactic.first == tacticName) {
-            for (auto pair : tactic.second) {
+            for (const auto &pair : tactic.second) {
                 ids.insert(pair.first);
             }
         }
