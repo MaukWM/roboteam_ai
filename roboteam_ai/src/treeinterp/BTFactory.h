@@ -31,6 +31,10 @@ class BTFactory {
     public:
         void init();
 
+        static int getKeeperID() {
+                return keeperID;
+        }
+
         static BTFactory &getFactory();
 
         bt::BehaviorTree::Ptr getTree(std::string treeName);

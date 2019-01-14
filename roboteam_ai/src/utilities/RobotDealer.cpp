@@ -7,12 +7,15 @@
 #include "Field.h"
 #include "ros/ros.h"
 #include <utility>
+#include <roboteam_ai/src/treeinterp/BTFactory.h>
 
 namespace robotDealer {
 
 std::map<std::string, std::set<std::pair<int, std::string>>> RobotDealer::robotOwners;
 
 std::mutex RobotDealer::robotOwnersLock;
+
+int RobotDealer::keeperID = -1;
 
 /// For internal use
 /// Removes a robot with an ID from the map and if the tactic then is empty it removes the tactic
@@ -347,6 +350,16 @@ std::string RobotDealer::getRoleNameForId(int ID) {
     }
     ROS_ERROR("No robot with that ID  getRoleNameForId");
     return "";
+
+}
+void RobotDealer::setKeeper() {
+
+    if (BTFactory::getKeeperID() == -1) {
+        ROS_ERROR("Make sure the keeper ID is set in the BTFactory says RobotDealer");
+    }
+    else {
+        RobotDealer::keeperID = BTFactory::getKeeperID();
+    }
 
 }
 

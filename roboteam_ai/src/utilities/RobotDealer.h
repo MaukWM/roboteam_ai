@@ -46,6 +46,10 @@ class RobotDealer {
         static int getRobotClosestToLine(std::set<int> &ids, rtt::Vector2 point1, rtt::Vector2 point2,
                 bool inBetweenPoints);
 
+        static int keeperID;
+
+        static void setKeeper();
+
     public:
 
         static int claimRobotForTactic(RobotType feature, std::string tacticName, std::string roleName);

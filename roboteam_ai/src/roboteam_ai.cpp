@@ -35,6 +35,10 @@ void runBehaviourTrees() {
 
     BTFactory::setCurrentTree("SimpleStrategy");
 
+    // Keeper stuff demo
+    BTFactory::setKeeper(0);
+    BTFactory::setKeeperTree("BasicKeeper");
+
     // Main loop
     double longestTick = 0.0;
     while (ros::ok()) {
@@ -76,7 +80,6 @@ void runBehaviourTrees() {
             std::cout << "longest tick took: " << time_span.count()*1000 << "ms." << std::endl;
             longestTick = time_span.count();
         }
-        //std::cout << "Tick took:  " << time_span.count()*1000 << " ms." << std::endl;
 
         switch (status) {
             case Status::Running:

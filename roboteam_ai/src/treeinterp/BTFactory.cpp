@@ -12,7 +12,7 @@ std::map<std::string, bt::Node::Ptr>BTFactory::tacticsRepo;
 std::map<std::string, bt::BehaviorTree::Ptr>BTFactory::keeperRepo;
 std::string BTFactory::currentTree = "NaN";
 std::string BTFactory::keeperTree;
-int BTFactory::keeperID;
+int BTFactory::keeperID = -1;
 bool BTFactory::initialized = false;
 
 /// Returns the Behaviour Tree Factory Singleton
@@ -74,6 +74,11 @@ bool BTFactory::isInitialized() {
 }
 
 void BTFactory::setKeeperTree(const std::string &keeperTree_) {
+
+    if (keeperID == -1) {
+        ROS_ERROR("Always remember to set the keeper ID before the keeper tree");
+        return;
+    }
 
     keeperTree = keeperTree_;
 
