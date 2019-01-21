@@ -1,0 +1,66 @@
+{
+  "name": "BackAndForthTactic",
+  "data": {
+    "trees": [
+      {
+        "title": "BackAndForthTactic",
+        "root": "qncs746k4lbevc7",
+        "nodes": {
+          "qncs746k4lbevc7": {
+            "id": "qncs746k4lbevc7",
+            "title": "ParallelSequence",
+            "children": [
+              "6mv52y86d9x05iuh1"
+            ]
+          },
+          "6qq4x9siwtgkdal8s": {
+            "id": "6qq4x9siwtgkdal8s",
+            "title": "Repeater",
+            "isRole": false,
+            "children": [
+              "lp7com3s2gaocio"
+            ]
+          },
+          "6mv52y86d9x05iuh1": {
+            "id": "6mv52y86d9x05iuh1",
+            "title": "Role",
+            "children": [
+              "jksndcoen3nha8j2n"
+            ],
+            "name": "backAndForth1"
+          },
+        "jksndcoen3nha8j2n": {
+          "id": "jksndcoen3nha8j2n",
+          "title": "MemSequence",
+          "children": [
+            "lp7com3s2gaocio",
+            "ljdnfljnj4lnsn"
+          ]
+        },
+          "lp7com3s2gaocio": {
+            "id": "lp7com3s2gaocio",
+            "title": "GoToPos",
+            "isRole": false,
+            "properties": {
+              "ROLE": "backAndForth1",
+              "Position": "{-4,0}",
+              "goToPos": "true",
+              "random": "false"
+            }
+          },
+          "ljdnfljnj4lnsn": {
+            "id": "ljdnfljnj4lnsn",
+            "title": "GoToPos",
+            "isRole": false,
+            "properties": {
+              "ROLE": "backAndForth1",
+              "Position": "{4,0}",
+              "goToPos": "true",
+              "random": "false"
+            }
+          }
+        }
+      }
+    ]
+  }
+}
