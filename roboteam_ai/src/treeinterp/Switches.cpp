@@ -37,6 +37,9 @@
 #include <roboteam_ai/src/skills/GoToPosLuTh.h>
 #include <roboteam_ai/src/skills/InterceptBall.h>
 #include "../skills/DribbleRotate.h"
+#include <roboteam_ai/src/skills/Defend.h>
+#include <roboteam_ai/src/skills/InterceptBall.h>
+#include <roboteam_ai/src/skills/BasicGoToPos.h>
 
 //  ______________________
 //  |                    |
@@ -271,6 +274,12 @@ bt::Node::Ptr Switches::tacticSwitch(std::string name, bt::Blackboard::Ptr prope
                     {"simpleStupidRobot", robotType::random}
             }
             },
+            {"TwoDefendersTactic", {
+                    {"defender1", robotType::closeToOurGoal},
+                    {"defender2", robotType::closeToOurGoal},
+            }
+            },
+
             {"SimpleDefendTactic", {
                     {"simpleDefender1", robotType::closeToOurGoal},
                     {"simpleDefender2", robotType::closeToOurGoal},
@@ -302,6 +311,11 @@ bt::Node::Ptr Switches::tacticSwitch(std::string name, bt::Blackboard::Ptr prope
             {"KeeperTestTactic", {
                     {"keeper", robotType::random},
                     {"atak", robotType::random}
+            }
+            },
+            {"QualificationTactic", {
+                    {"qualRole", robotType::random},
+                    {"eloRlauq", robotType::random}
             }
             },
             {"BackAndForthTactic", {
