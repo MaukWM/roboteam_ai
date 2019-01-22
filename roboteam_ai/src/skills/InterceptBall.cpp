@@ -34,9 +34,11 @@ void InterceptBall::onInitialize() {
         currentProgression = BALLMISSED;
         backwards=false;
     }
-    pid.setPID(3,0.0,0.2,1.0/constants::tickRate); //TODO:magic numbers galore, from the old team. Move to new control library?
-    finePid.setPID(3.0,0.0,0.0, 1.0/constants::tickRate);
-}
+    pid.setPID(5.7,1.7,0.0/constants::tickRate); //TODO:magic numbers galore, from the old team. Move to new control library?
+    finePid.setPID(5.7,1.7,0.0, 1.0/constants::tickRate);
+        std::cout<<"Initialize: INTERCEPTING"<<std::endl;
+
+    }
 InterceptBall::Status InterceptBall::onUpdate() {
     ball = World::getBall();
     //The keeper dynamically updates the intercept position as he needs to be responsive and cover the whole goal and this would help against curveballs etc.
@@ -82,10 +84,12 @@ InterceptBall::Status InterceptBall::onUpdate() {
 void InterceptBall::checkProgression() {
     if (keeper) {
         if (ballInGoal()|| missedBall(ballStartPos, ballEndPos, ballStartVel)) {
+            std::cout<<"BALLMISSED"<<std::endl;
             currentProgression = BALLMISSED;
         }
         //Check if the ball was deflected
         if (! ballToGoal()) {
+            std::cout<<"BALLDEFLECTED"<<std::endl;
             currentProgression = BALLDEFLECTED;
             return;
         }
@@ -109,19 +113,23 @@ void InterceptBall::checkProgression() {
     switch (currentProgression) {
     case INTERCEPTING:
         if (dist < constants::ROBOT_RADIUS) {
+            std::cout<<"INTERCEPTING->CLOSETOPOINT"<<std::endl;
             currentProgression = CLOSETOPOINT;
         };//If robot is close, switch to closetoPoint
         return;
     case CLOSETOPOINT:
         if (dist < constants::INTERCEPT_POSDIF) {
+            std::cout<<"CLOSETOPOINT->INPOSITION"<<std::endl;
             currentProgression = INPOSITION;
         }//If Robot overshoots, switch to overshoot, if in Position, go there
         else if (dist >= constants::ROBOT_RADIUS) {
+            std::cout<<"CLOSETOPOINT->OVERSHOOT"<<std::endl;
             currentProgression = OVERSHOOT;
         }
         return;
     case OVERSHOOT:
         if (dist <constants::ROBOT_RADIUS) {
+            std::cout<<"OVERSHOOT->CLOSETOPOINT"<<std::endl;
             currentProgression = CLOSETOPOINT;
         };// Go back to closestopoint
     case INPOSITION:
@@ -129,6 +137,7 @@ void InterceptBall::checkProgression() {
             return;
         }
         else {
+            std::cout<<"INPOSITION->CLOSETOPOINT"<<std::endl;
             currentProgression = CLOSETOPOINT;
             return;
         }// Stay here until either ball misses or is deflected;
