@@ -3,8 +3,6 @@
 //
 
 #include "IsBallOnOurSide.h"
-#include "../utilities/World.h"
-#include "../utilities/Field.h"
 
 namespace rtt {
 namespace ai {

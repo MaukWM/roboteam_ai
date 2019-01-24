@@ -99,10 +99,9 @@ set(BT_SOURCES
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/bt/Leaf.cpp
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/bt/Node.hpp
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/bt/Node.cpp
-
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/bt/Role.cpp
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/bt/Role.h
-        roboteam_ai/src/bt/tactics/EnterFormationTactic.cpp roboteam_ai/src/bt/tactics/EnterFormationTactic.h)
+        )
 
 set(TACTIC_SOURCES
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/bt/Tactic.cpp
@@ -111,6 +110,8 @@ set(TACTIC_SOURCES
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/bt/tactics/VictoryDanceTactic.h
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/bt/tactics/DefaultTactic.cpp
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/bt/tactics/DefaultTactic.h
+        ${PROJECT_SOURCE_DIR}/roboteam_ai/src/bt/tactics/EnterFormationTactic.cpp
+        ${PROJECT_SOURCE_DIR}/roboteam_ai/src/bt/tactics/EnterFormationTactic.h
         )
 
 set(IO_SOURCES
@@ -175,8 +176,11 @@ set(SKILLS_SOURCES
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/skills/DribbleRotate.h
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/skills/BasicGoToPos.cpp
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/skills/BasicGoToPos.h
-        roboteam_ai/src/skills/Defend.cpp roboteam_ai/src/skills/Defend.h
-        roboteam_ai/src/skills/EnterFormation.cpp roboteam_ai/src/skills/EnterFormation.h)
+        ${PROJECT_SOURCE_DIR}/roboteam_ai/src/skills/Defend.cpp
+        ${PROJECT_SOURCE_DIR}/roboteam_ai/src/skills/Defend.h
+        ${PROJECT_SOURCE_DIR}/roboteam_ai/src/skills/EnterFormation.cpp
+        ${PROJECT_SOURCE_DIR}/roboteam_ai/src/skills/EnterFormation.h
+        )
 
 set(CONDITIONS_SOURCES
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/conditions/HasBall.hpp
@@ -207,6 +211,8 @@ set(CONDITIONS_SOURCES
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/conditions/BallInDefenseAreaAndStill.h
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/conditions/IsBallOnOurSide.cpp
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/conditions/IsBallOnOurSide.h
+        ${PROJECT_SOURCE_DIR}/roboteam_ai/src/conditions/IsBallInField.cpp
+        ${PROJECT_SOURCE_DIR}/roboteam_ai/src/conditions/IsBallInField.h
         )
 
 set(CONTROL_SOURCES
@@ -223,7 +229,8 @@ set(CONTROL_SOURCES
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/control/ControlKick.h
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/control/ControlKick.cpp
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/control/Controller.cpp
-        ${PROJECT_SOURCE_DIR}/roboteam_ai/src/control/Controller.h)
+        ${PROJECT_SOURCE_DIR}/roboteam_ai/src/control/Controller.h
+        )
 
 set(TEST_SOURCES
         roboteam_ai/test/main.cpp
@@ -265,7 +272,8 @@ set(INTERFACE_SOURCES
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/interface/drawer.cpp
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/interface/drawer.h
         roboteam_ai/src/interface/InterfaceValues.cpp
-        roboteam_ai/src/interface/InterfaceValues.h)
+        roboteam_ai/src/interface/InterfaceValues.h
+        )
 
 catkin_package()
 include_directories(${catkin_INCLUDE_DIRS})
@@ -294,7 +302,8 @@ add_executable(Roboteam_AI
         ${CONDITIONS_SOURCES}
         ${CONTROL_SOURCES}
         ${TACTIC_SOURCES}
-        ${INTERFACE_SOURCES})
+        ${INTERFACE_SOURCES}
+        )
 
 add_dependencies(Roboteam_AI ${catkin_EXPORTED_TARGETS})
 target_link_libraries(Roboteam_AI ${catkin_LIBRARIES} Qt5::Widgets Qt5::Gui)
