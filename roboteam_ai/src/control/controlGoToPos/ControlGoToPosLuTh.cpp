@@ -43,11 +43,13 @@ Vector2 ControlGoToPosLuTh::goToPos(RobotPtr robot, Vector2 &target) {
                 interface::InterfaceValues::getLuthD());
 
     }
+   // posPID.setPID(0,0,0);
     bool recalculate = false;
     double deltaTarget = (abs((target - targetPos).length()));
     double deltaPos = (abs((target - robot->pos).length()));
 
     if (deltaTarget > errorMargin && ! (deltaPos < errorMargin*4.0 && deltaTarget > errorMargin*2.0)) {
+        std::cout << "else0" << std::endl;
         recalculate = true;
     }
     else if (me.posData.size() > 4) {
@@ -64,7 +66,8 @@ Vector2 ControlGoToPosLuTh::goToPos(RobotPtr robot, Vector2 &target) {
                 currentIndex = i;
             }
         }
-        if (distance > me.defaultCollisionRadius) {
+        if (distance > me.defaultCollisionRadius*0.9) {
+            std::cout << "else1" << std::endl;
             recalculate = true;
         }
         else {
@@ -76,19 +79,23 @@ Vector2 ControlGoToPosLuTh::goToPos(RobotPtr robot, Vector2 &target) {
                 me.t = i*me.dt;
                 Vector2 closestBot = ControlUtils::getClosestRobot(me.pos, me.id, true, me.t);
                 if (me.isCollision(closestBot)) {
+                    std::cout << "else2" << std::endl;
                     recalculate = true;
                     break;
                 }
                 Vector2 ballPosAtT = (Vector2)ball->pos + (Vector2)ball->vel * me.t;
                 if (avoidBall && me.isCollision(ballPosAtT)) {
-                    recalculate = true;
+                    std::cout << "else3" << std::endl;
+                    //recalculate = true;
                     break;
                 }
             }
         }
     }
-    else
+    else {
         recalculate = true;
+        std::cout << "else4" << std::endl;
+    }
 
 // Calculate new path
     if (recalculate) {
@@ -107,10 +114,11 @@ Vector2 ControlGoToPosLuTh::goToPos(RobotPtr robot, Vector2 &target) {
 //std::cout << "calculation: " << timeTaken*1000 << " ms" << std::endl;
 
         drawCross(targetPos);
-
+        std::cout << "before: " << me.posData.size() << std::endl;
         if (! nicePath) {
             me.clear();
         }
+
     }
 
 // display
@@ -125,6 +133,8 @@ Vector2 ControlGoToPosLuTh::goToPos(RobotPtr robot, Vector2 &target) {
     }
 
 //PID
+    std::cout << "After: " << me.posData.size() << std::endl;
+
     int minStep = 5;
     auto allBots = World::getAllRobots();
 
@@ -134,17 +144,23 @@ Vector2 ControlGoToPosLuTh::goToPos(RobotPtr robot, Vector2 &target) {
         Vector2 dir = (targetPos - robot->pos).scale(3.0);
         velocityCommand.x = static_cast<float>(dir.x);
         velocityCommand.y = static_cast<float>(dir.y);
+        std::cout << "robot too close, recalculate" << std::endl;
     }
     else if (static_cast<int>(me.posData.size()) < minStep) {
         me.clear();
-
+        std::cout << "cleared me" << std::endl;
         if (closestRobotDir.length() < me.defaultCollisionRadius) {
             std::cout << "Avoiding Collision ........" << std::endl;
             double vel = 1.5*me.defaultCollisionRadius/(me.defaultCollisionRadius+closestRobotDir.length());
             velocityCommand = (Vector2) {-closestRobotDir.y, closestRobotDir.x}.stretchToLength(vel);
+
         }
-        else
+        else {
             velocityCommand = (targetPos - robot->pos).stretchToLength(1.0f);
+            std::cout << "No path, no collision." << std::endl;
+
+        }
+
     }
     else if (closestRobotDir.length() < me.defaultCollisionRadius) {
         std::cout << "Avoiding Collision" << std::endl;
