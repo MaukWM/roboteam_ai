@@ -6,3 +6,4 @@ IsOnOurSide
 WeHaveBall
 IsRobotClosestToBall,secondsAhead
 IsBallOnOurSide,inField
+IsBallInField,margin
