@@ -10,3 +10,4 @@ DefendOnRobot
 Pass
 BasicGoToPos,ROLE,avoidBall,canGoOutsideField
 EnterFormation
+Attack

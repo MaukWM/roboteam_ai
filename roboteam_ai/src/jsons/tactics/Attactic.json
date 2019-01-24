@@ -4,35 +4,102 @@
     "trees": [
       {
         "title": "Attactic",
-        "root": "57mrxn20qviax5qc",
+        "root": "57j4do0axb9e0",
         "nodes": {
-          "57mrxn20qviax5qc": {
-            "id": "57mrxn20qviax5qc",
-            "title": "UntilSuccess",
+          "57j4do0axb9e0": {
+            "id": "57j4do0axb9e0",
+            "title": "Repeater",
             "children": [
-              "hawoks13kj9jfs"
+              "7d3b5rijtg73ohxu"
             ]
           },
-          "hawoks13kj9jfs": {
-            "id": "hawoks13kj9jfs",
+          "7d3b5rijtg73ohxu": {
+            "id": "7d3b5rijtg73ohxu",
             "title": "Role",
             "name": "atak",
+            "role": "AttackRole",
             "children": [
-              "yeuvb1i7722s19d"
-            ]
+              "vzqas77fz0uq5"
+            ],
+            "properties": {
+              "ROLE": "atak"
+            }
           },
-          "yeuvb1i7722s19d": {
-            "id": "yeuvb1i7722s19d",
-            "title": "UntilSuccess",
-            "isRole": false,
+          "vzqas77fz0uq5": {
+            "id": "vzqas77fz0uq5",
+            "title": "Sequence",
             "children": [
-              "zcw39vx76dnm7k7s"
-            ]
+              "zscuyod70sarcqi",
+              "4wkr7x0gor3ok0o0"
+            ],
+            "properties": {
+              "ROLE": "atak"
+            }
           },
-          "zcw39vx76dnm7k7s": {
-            "id": "zcw39vx76dnm7k7s",
+          "zscuyod70sarcqi": {
+            "id": "zscuyod70sarcqi",
+            "title": "Selector",
+            "children": [
+              "75ybsvfhkxielj0w",
+              "3mhb6te6lcakf"
+            ],
+            "properties": {
+              "ROLE": "atak"
+            }
+          },
+          "4wkr7x0gor3ok0o0": {
+            "id": "4wkr7x0gor3ok0o0",
             "title": "Attack",
-            "isRole": false,
+            "properties": {
+              "ROLE": "atak"
+            }
+          },
+          "75ybsvfhkxielj0w": {
+            "id": "75ybsvfhkxielj0w",
+            "title": "IsBallInField",
+            "properties": {
+              "margin": "0.3",
+              "ROLE": "atak"
+            }
+          },
+          "3mhb6te6lcakf": {
+            "id": "3mhb6te6lcakf",
+            "title": "MemSequence",
+            "children": [
+              "zj1rhh851afczxn",
+              "8ubwq5hunttond2n"
+            ],
+            "properties": {
+              "ROLE": "atak"
+            }
+          },
+          "zj1rhh851afczxn": {
+            "id": "zj1rhh851afczxn",
+            "title": "BasicGoToPos",
+            "properties": {
+              "canGoOutsideField": "false",
+              "avoidBall": "false",
+              "goToBall": "true",
+              "goBehindBall": "false",
+              "distanceBehindBall": "0.45",
+              "ROLE": "atak"
+            }
+          },
+          "gTp2": {
+            "id": "gTp2",
+            "title": "BasicGoToPos",
+            "properties": {
+              "canGoOutsideField": "false",
+              "avoidBall": "false",
+              "goToBall": "true",
+              "goBehindBall": "false",
+              "distanceBehindBall": "0.1",
+              "ROLE": "atak"
+            }
+          },
+          "8ubwq5hunttond2n": {
+            "id": "8ubwq5hunttond2n",
+            "title": "GetBall",
             "properties": {
               "ROLE": "atak"
             }

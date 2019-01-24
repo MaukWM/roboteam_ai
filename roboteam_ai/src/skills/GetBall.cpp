@@ -141,8 +141,8 @@ void GetBall::sendApproachCommand() {
     command.id = robot->id;
     command.use_angle = 1;
     command.dribbler = 1;
-    command.x_vel = (float) deltaPos.normalize().x*c::GETBALL_SPEED;
-    command.y_vel = (float) deltaPos.normalize().y*c::GETBALL_SPEED;
+    command.x_vel = static_cast<float>(deltaPos.normalize().x*c::GETBALL_SPEED);
+    command.y_vel = static_cast<float>(deltaPos.normalize().y*c::GETBALL_SPEED);
     command.w = (float) deltaPos.angle();
     publishRobotCommand(command);
 

@@ -14,7 +14,18 @@ BasicGoToPos::BasicGoToPos(string name, bt::Blackboard::Ptr blackboard)
 
 void BasicGoToPos::onInitialize() {
     robot = getRobotFromProperties(properties);
-    targetPos = properties->getVector2("target");
+
+    if (properties->hasVector2("target"))
+        targetPos = properties->getVector2("target");
+
+    goToBall = properties->getBool("goToBall");
+    goBehindBall = properties->getBool("goBehindBall");
+
+    if (properties->hasDouble("distanceBehindBall"))
+        distanceBehindBall = properties->getDouble("distanceBehindBall");
+    else
+        distanceBehindBall = 0.4;
+
     goToPos.setAvoidBall(properties->getBool("avoidBall"));
     goToPos.setCanGoOutsideField(properties->getBool("canGoOutsideField"));
 }
@@ -23,6 +34,13 @@ void BasicGoToPos::onInitialize() {
 Skill::Status BasicGoToPos::onUpdate() {
 
     if (! robot) return Status::Running;
+
+    if (goToBall)
+        targetPos = ball->pos;
+
+    if (goBehindBall)
+        targetPos = Coach::getPositionBehindBallToGoal(distanceBehindBall, false);
+
 
     roboteam_msgs::RobotCommand command;
     command.id = robot->id;
@@ -35,12 +53,10 @@ Skill::Status BasicGoToPos::onUpdate() {
 
     Vector2 deltaPos = targetPos - robot->pos;
 
-    if (deltaPos.length() > errorMargin) {
+    if (deltaPos.length() > errorMargin)
         return Status::Running;
-    }
-    else {
+    else
         return Status::Success;
-    }
 }
 
 }

@@ -54,6 +54,7 @@
 #include <roboteam_ai/src/conditions/IsRobotClosestToBall.h>
 #include <roboteam_ai/src/conditions/BallKickedToOurGoal.h>
 #include <roboteam_ai/src/skills/EnterFormation.h>
+#include <roboteam_ai/src/conditions/IsBallInField.h>
 #include "../conditions/BallInDefenseAreaAndStill.h"
 #include "../conditions/IsInDefenseArea.hpp"
 
@@ -77,6 +78,7 @@ std::vector<std::string> Switches::tacticJsonFileNames =
 
 std::vector<std::string> Switches::strategyJsonFileNames =
         {
+         "DemoTeamTwenteStrategy",
          "QualificationStrategy",
          "haltStrategy",
          "PassStrategy",
@@ -154,6 +156,7 @@ bt::Node::Ptr Switches::leafSwitch(std::string name, bt::Blackboard::Ptr propert
      * WeHaveBall
      */
 
+    map["IsBallInField"] =          std::make_shared<rtt::ai::IsBallInField>(name, properties);
     map["BallKickedToOurGoal"] =    std::make_shared<rtt::ai::BallKickedToOurGoal>(name, properties);
     map["CanSeeGoal"] =             std::make_shared<rtt::ai::CanSeeGoal>(name, properties);
     map["HasBall"] =                std::make_shared<rtt::ai::HasBall>(name, properties);

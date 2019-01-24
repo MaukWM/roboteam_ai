@@ -23,8 +23,7 @@
             "title": "ParallelSequence",
             "isRole": false,
             "children": [
-              "jnzwvf620oa6hp7c",
-              "jkx3g30rh8ovwfb"
+              "jnzwvf620oa6hp7c"
             ],
             "location": {
               "x": 385.0,
@@ -45,7 +44,7 @@
             "id": "jkx3g30rh8ovwfb",
             "title": "Tactic",
             "isRole": false,
-            "name": "KeeperTactic",
+            "name": "KeeperTacticV2",
             "location": {
               "x": 540.0,
               "y": 405.0

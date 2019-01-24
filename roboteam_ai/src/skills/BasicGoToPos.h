@@ -13,13 +13,18 @@ namespace ai {
 
 
 class BasicGoToPos : public Skill {
+    private:
+        Vector2 targetPos;
+        control::ControlGoToPos goToPos;
+        double errorMargin = 0.3;
+        bool goToBall = false;
+        bool goBehindBall = false;
+        double distanceBehindBall;
     public:
         explicit BasicGoToPos(string name, bt::Blackboard::Ptr blackboard);
         Status onUpdate() override;
         void onInitialize() override;
-        Vector2 targetPos;
-        control::ControlGoToPos goToPos;
-        double errorMargin = 0.3;
+
 
 
 };
