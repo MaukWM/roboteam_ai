@@ -52,12 +52,11 @@ public:
     static bool isRobotBehindBallToPosition(double distanceBehindBall, const Vector2 &position, const Vector2 &robotPosition);
 
     static std::pair<int, bool> getRobotClosestToBall();
-    static int getOurRobotClosestToBall();
-    static int getTheirRobotClosestToBall();
 
     static int getRobotClosestToGoal(bool ourRobot, bool ourGoal);
 
     static std::shared_ptr<roboteam_msgs::WorldRobot> getRobotClosestToBall(bool isOurTeam);
+    static std::shared_ptr<roboteam_msgs::WorldRobot> getRobotClosestToPoint(bool isOurTeam, Vector2 position);
 
     static void addDefender(int id);
     static void removeDefender(int id);

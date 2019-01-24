@@ -10,6 +10,7 @@
 #include <mutex>
 #include <vector>
 #include "roboteam_utils/Vector2.h"
+#include "../utilities/Coach.h"
 
 namespace robotDealer {
 
@@ -19,7 +20,8 @@ enum RobotType : short {
     closeToOurGoal,
     betweenBallAndOurGoal,
     closeToTheirGoal,
-    random
+    random,
+    closeToBP
 
 };
 

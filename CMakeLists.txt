@@ -213,6 +213,8 @@ set(CONDITIONS_SOURCES
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/conditions/IsBeingPassedTo.h
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/conditions/IsCloseToPoint.cpp
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/conditions/IsCloseToPoint.h
+        ${PROJECT_SOURCE_DIR}/roboteam_ai/src/conditions/BP_TwoRobots.cpp
+        ${PROJECT_SOURCE_DIR}/roboteam_ai/src/conditions/BP_TwoRobots.h
         )
 
 set(CONTROL_SOURCES

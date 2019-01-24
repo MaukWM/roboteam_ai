@@ -124,6 +124,11 @@ int RobotDealer::claimRobotForTactic(RobotType feature, std::string roleName, st
                 break;
             }
 
+            case closeToBP: {
+                rtt::Vector2 BP_point = rtt::ai::coach::Coach::getBallPlacementPos();
+                id = getRobotClosestToPoint(ids, BP_point);
+            }
+
         }
         std::lock_guard<std::mutex> lock(robotOwnersLock);
         RobotDealer::unFreeRobot(id);

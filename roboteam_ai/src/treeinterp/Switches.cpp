@@ -62,6 +62,7 @@
 #include "../conditions/IsInDefenseArea.hpp"
 #include "../conditions/IsBeingPassedTo.h"
 #include "../conditions/IsCloseToPoint.h"
+#include "../conditions/BP_TwoRobots.h"
 
 /**
  * When you want to add a new class to the ai, you need to change this file so the first two vector have the FILE NAMES
@@ -88,7 +89,8 @@ std::vector<std::string> Switches::tacticJsonFileNames =
          "KeeperTactic",
          "EnterFormationTactic",
          "BallPlacementUsTactic",
-         "AvoidBallForBallPlacementTactic"};
+         "AvoidBallForBallPlacementTactic",
+          "BallPlacementUsTactic_TwoRobots"};
 
 
 std::vector<std::string> Switches::strategyJsonFileNames =
@@ -102,7 +104,8 @@ std::vector<std::string> Switches::strategyJsonFileNames =
          "twoPlayerStrategyV2",
          "threePlayerStrategyV2",
          "EnterFormationStrategy",
-         "BallPlacementUsStrategy"
+         "BallPlacementUsStrategy",
+         "BallPlacementUsStrategy_2"
         };
 
 std::vector<std::string> Switches::keeperJsonFiles =
@@ -179,19 +182,20 @@ bt::Node::Ptr Switches::leafSwitch(std::string name, bt::Blackboard::Ptr propert
      * WeHaveBall
      */
 
-    map["BallKickedToOurGoal"] =    std::make_shared<rtt::ai::BallKickedToOurGoal>(name, properties);
-    map["BallInDefenseAreaAndStill"] = std::make_shared<rtt::ai::BallInDefenseAreaAndStill>(name,properties);
-    map["CanSeeGoal"] =             std::make_shared<rtt::ai::CanSeeGoal>(name, properties);
-    map["HasBall"] =                std::make_shared<rtt::ai::HasBall>(name, properties);
-    map["IsRobotClosestToBall"] =   std::make_shared<rtt::ai::IsRobotClosestToBall>(name, properties);
-    map["IsInDefenseArea"] =        std::make_shared<rtt::ai::IsInDefenseArea>(name,properties);
-    map["TheyHaveBall"] =           std::make_shared<rtt::ai::TheyHaveBall>(name, properties);
-    map["IsBeingPassedTo"] =        std::make_shared<rtt::ai::IsBeingPassedTo>(name, properties);
-    map["IsCloseToPoint"] =         std::make_shared<rtt::ai::IsCloseToPoint>(name, properties);
-    map["IsBallOnOurSide"] =        std::make_shared<rtt::ai::IsBallOnOurSide>(name, properties);
-    map["BallInDefenseAreaAndStill"] = std::make_shared<rtt::ai::BallInDefenseAreaAndStill>(name, properties);
-    map["IsInDefenseArea"] = std::make_shared<rtt::ai::IsInDefenseArea>(name, properties);
-    map["DribbleRotate"] = std::make_shared<rtt::ai::DribbleRotate>(name, properties);
+    map["BallKickedToOurGoal"] =        std::make_shared<rtt::ai::BallKickedToOurGoal>(name, properties);
+    map["BallInDefenseAreaAndStill"] =  std::make_shared<rtt::ai::BallInDefenseAreaAndStill>(name,properties);
+    map["CanSeeGoal"] =                 std::make_shared<rtt::ai::CanSeeGoal>(name, properties);
+    map["HasBall"] =                    std::make_shared<rtt::ai::HasBall>(name, properties);
+    map["IsRobotClosestToBall"] =       std::make_shared<rtt::ai::IsRobotClosestToBall>(name, properties);
+    map["IsInDefenseArea"] =            std::make_shared<rtt::ai::IsInDefenseArea>(name,properties);
+    map["TheyHaveBall"] =               std::make_shared<rtt::ai::TheyHaveBall>(name, properties);
+    map["IsBeingPassedTo"] =            std::make_shared<rtt::ai::IsBeingPassedTo>(name, properties);
+    map["IsCloseToPoint"] =             std::make_shared<rtt::ai::IsCloseToPoint>(name, properties);
+    map["IsBallOnOurSide"] =            std::make_shared<rtt::ai::IsBallOnOurSide>(name, properties);
+    map["BallInDefenseAreaAndStill"] =  std::make_shared<rtt::ai::BallInDefenseAreaAndStill>(name, properties);
+    map["IsInDefenseArea"] =            std::make_shared<rtt::ai::IsInDefenseArea>(name, properties);
+    map["DribbleRotate"] =              std::make_shared<rtt::ai::DribbleRotate>(name, properties);
+    map["BP_TwoRobots"] =               std::make_shared<rtt::ai::BP_TwoRobots>(name, properties);
 
     if ( map.find(name) != map.end() ) {
         return map[name];
@@ -311,6 +315,11 @@ bt::Node::Ptr Switches::tacticSwitch(std::string name, bt::Blackboard::Ptr prope
             {"BallPlacementUsTactic",{
                     {"BallPlacementBot",robotType::random}
             }
+            },
+            {"BallPlacementUsTactic_TwoRobots",{
+                 {"passer",robotType::closeToBall},
+                   {"ballPlacementReceiver", robotType::closeToBP}
+             }
             }
     };
 

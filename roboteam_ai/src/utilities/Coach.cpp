@@ -180,6 +180,15 @@ std::shared_ptr<roboteam_msgs::WorldRobot> Coach::getRobotClosestToBall(bool isO
     return nullptr;
 }
 
+std::shared_ptr<roboteam_msgs::WorldRobot> Coach::getRobotClosestToPoint(bool isOurTeam, Vector2 position) {
+    auto robots = isOurTeam ? World::get_world().us : World::get_world().them;
+    auto closestId = World::get_robot_closest_to_point(robots, position);
+    if (closestId) {
+        return World::getRobotForId(*closestId, isOurTeam);
+    }
+    return nullptr;
+}
+
 std::pair<int, bool> Coach::getRobotClosestToBall() {
     auto closestUs = getRobotClosestToBall(true);
     auto closestThem = getRobotClosestToBall(false);

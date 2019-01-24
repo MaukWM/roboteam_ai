@@ -37,6 +37,8 @@ void BasicGoToPos::onInitialize() {
             ROS_ERROR("BasicGoToPos: No ball found! assuming (%f,%f)", targetPos.x, targetPos.y);
         }
     }
+
+    if (properties->getBool("BallPlacementReceive")) targetPos = coach::Coach::getBallPlacementPos();
 }
 
 
