@@ -16,6 +16,7 @@ private:
     control::ControlGoToPos goToPos;
     GoToType goToType;
     Vector2 focusPoint;
+    Vector2 passPosition;
     Vector2 ballStartPos;
     Vector2 ballEndPos;
     Vector2 ballStartVel;

@@ -29,10 +29,15 @@ class Coach {
     static bool readyToReceivePass;
     static int robotBeingPassedTo;
     static bool passed;
+    static Vector2 passPosition;
+
 public:
     static std::map<int, int> defencePairs;
     static int pickOffensivePassTarget(int selfID, std::string roleName);
     static int pickDefensivePassTarget(int selfID);
+
+    static Vector2 pickOffensivePassPosition(Vector2 fromPos);
+
     static int pickOpponentToCover(int selfID);
     static int doesRobotHaveBall(unsigned int robotID, bool isOurTeam);
     static int doesRobotHaveBall(unsigned int robotID, bool isOurTeam, double dist);
@@ -64,21 +69,23 @@ public:
     static Vector2 getDefensivePosition(int robotId);
 
     // Pass variables and functions
-    static bool initiatePass(int robotID);
+    static bool initiatePass(int robotID, Vector2 passPosition);
     static bool isReadyToReceivePass();
     static void setReadyToReceivePass(bool readyToReceivePass);
     static int getRobotBeingPassedTo();
     static void setRobotBeingPassedTo(int robotBeingPassedTo);
     static bool isPassed();
     static void setPassed(bool passed);
+    static const Vector2 &getPassPosition();
+    static void setPassPosition(const Vector2 &passPosition);
 
     static void addFormationRobot(int id);
     static void removeFormationRobot(int id);
     static Vector2 getFormationPosition(int robotId);
 
-        static Vector2 getBallPlacementPos();
-        static Vector2 getBallPlacementBeforePos(Vector2 ballPos);
-        static Vector2 getBallPlacementAfterPos(Vector2 ballPos, double RobotAngle);
+    static Vector2 getBallPlacementPos();
+    static Vector2 getBallPlacementBeforePos(Vector2 ballPos);
+    static Vector2 getBallPlacementAfterPos(Vector2 ballPos, double RobotAngle);
 };
 
 }

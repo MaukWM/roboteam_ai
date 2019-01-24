@@ -18,6 +18,7 @@ std::vector<int> Coach::robotsInFormation = {};
 bool Coach::readyToReceivePass;
 int Coach::robotBeingPassedTo;
 bool Coach::passed;
+Vector2 Coach::passPosition;
 
 int Coach::pickOffensivePassTarget(int selfID, std::string roleName) {
 
@@ -51,6 +52,38 @@ int Coach::pickDefensivePassTarget(int selfID) {
     }
     return - 1;
 }
+
+Vector2 Coach::pickOffensivePassPosition(Vector2 fromPos) {
+    auto world = World::get_world();
+    auto field = Field::get_field();
+
+    double xStart = field.field_length / 2 / 3;
+    double xEnd = field.field_length / 2 - 0.5;
+    double yStart = -field.field_width / 2 + 0.2;
+    double yEnd = field.field_width / 2 - 0.2;
+
+    int safelyness = 3;
+    while (safelyness > 0) {
+
+        int attempt = 0;
+        int maxAttempts = 10;
+        while (attempt <= maxAttempts) {
+            double x = (xEnd - xStart) * ( (double)rand() / (double)RAND_MAX) + xStart;
+            double y = (yEnd - yStart) * ( (double)rand() / (double)RAND_MAX) + yStart;
+            if (control::ControlUtils::clearLine(fromPos, {x, y}, world, safelyness)) {
+                if (control::ControlUtils::clearLine({x, y}, Field::get_their_goal_center(), world, safelyness)) {
+                    return {x, y};
+                }
+            }
+
+            attempt++;
+        }
+        safelyness --;
+    }
+    return {0, 0};
+
+}
+
 int Coach::pickHarassmentTarget(int selfID) {
     auto world = World::get_world();
     auto them = world.them;
@@ -278,8 +311,10 @@ int Coach::getRobotClosestToGoal(bool ourRobot, bool ourGoal) {
     return closestId == nullptr ? -1 : *closestId;
 }
 
-bool Coach::initiatePass(int robotID) {
+bool Coach::initiatePass(int robotID, Vector2 passPosition) {
     setRobotBeingPassedTo(robotID);
+    setPassPosition(passPosition);
+    setReadyToReceivePass(false);
     std::cout<<robotBeingPassedTo<<std::endl;
     return true;
 }
@@ -321,6 +356,14 @@ Vector2 Coach::getBallPlacementAfterPos(Vector2 ballPos,double RobotAngle){
     Vector2 targetPos=interface::InterfaceValues::getBallPlacementTarget() + Vector2(constants::BP_MOVE_BACK_DIST,0).rotate(RobotAngle+M_PI);
     return targetPos;
 }
+
+    const Vector2 &Coach::getPassPosition() {
+        return passPosition;
+    }
+
+    void Coach::setPassPosition(const Vector2 &passPosition) {
+        Coach::passPosition = passPosition;
+    }
 } //control
 } //ai
 } //rtt

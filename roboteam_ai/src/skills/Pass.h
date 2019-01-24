@@ -14,7 +14,7 @@ namespace ai {
 class Pass : public Skill {
 private:
     int robotToPassToID = -1;
-    std::shared_ptr<roboteam_msgs::WorldRobot> robotToPassTo;
+    Vector2 positionToPassTo;
     enum Progression {
         INITIATING, POSITIONING, KICKING
     };
@@ -24,7 +24,7 @@ private:
     control::ControlGoToPos goToPos;
     GoToType goToType;
 
-    double maxDistance = 9.0;
+    double maxDistance = 6.0;
     double distance;
     double kicker_vel_multiplier;
     int checkTicks;
