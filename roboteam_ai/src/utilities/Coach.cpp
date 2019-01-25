@@ -49,6 +49,7 @@ int Coach::pickDefensivePassTarget(int selfID) {
             }
         }
         safelyness --;
+        std::cout << "Safelyness: " << safelyness << std::endl;
     }
     return - 1;
 }
@@ -57,8 +58,8 @@ Vector2 Coach::pickOffensivePassPosition(Vector2 fromPos) {
     auto world = World::get_world();
     auto field = Field::get_field();
 
-    double xStart = field.field_length / 2 / 3;
-    double xEnd = field.field_length / 2 - 0.5;
+    double xStart = 0;
+    double xEnd = field.field_length / 2 - 0.2;
     double yStart = -field.field_width / 2 + 0.2;
     double yEnd = field.field_width / 2 - 0.2;
 

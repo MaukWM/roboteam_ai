@@ -45,7 +45,7 @@ Receive::Status Receive::onUpdate() {
         command.use_angle = 1;
 
         if (((Vector2)robot->pos - passPosition).length() > 0.10) {
-            std::cout << passPosition << robot->pos << " - Distance: " << ((Vector2)robot->pos - passPosition).length() << std::endl;
+            // std::cout << passPosition << robot->pos << " - Distance: " << ((Vector2)robot->pos - passPosition).length() << std::endl;
             Vector2 velocities = goToPos.goToPos(robot, passPosition, GoToType::basic);
             command.x_vel = static_cast<float>(velocities.x);
             command.y_vel = static_cast<float>(velocities.y);
