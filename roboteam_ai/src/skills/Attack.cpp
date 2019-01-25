@@ -26,6 +26,7 @@ bt::Node::Status Attack::onUpdate() {
     GoToType goToType;
 
     if (! Coach::isRobotBehindBallToGoal(0.5, false, robot->pos)) {
+        std::cout << "robot is not close" << std::endl;
         targetPos = behindBall;
         command.use_angle = 1;
         command.w = static_cast<float>((ball - (Vector2) (robot->pos)).angle());
@@ -37,10 +38,13 @@ bt::Node::Status Attack::onUpdate() {
         command.use_angle = 1;
         command.w = static_cast<float>(((Vector2) {- 1.0, - 1.0}*deltaBall).angle());
         if (Coach::doesRobotHaveBall(robot->id, true, 0.15, 0.1)) {
+            std::cout << "________robot has ball" << std::endl;
             command.kicker = 1;
             command.kicker_vel = static_cast<float>(rtt::ai::constants::MAX_KICK_POWER);
             command.kicker_forced = 1;
-        }
+        } else
+            std::cout << "____robot is close to ball" << std::endl;
+
         goToType = GoToType::basic;
     }
     Vector2 velocity;
@@ -59,6 +63,9 @@ bt::Node::Status Attack::onUpdate() {
     else {
         velocity = goToPos.goToPos(robot, targetPos, goToType);
     }
+
+    if (velocity.length() < 0.3 && velocity.length() > 0.04)
+        velocity.stretchToLength(0.3);
     command.x_vel = static_cast<float>(velocity.x);
     command.y_vel = static_cast<float>(velocity.y);
     publishRobotCommand(command);
