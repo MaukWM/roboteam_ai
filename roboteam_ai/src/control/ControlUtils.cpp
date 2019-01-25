@@ -105,7 +105,7 @@ bool ControlUtils::clearLine(Vector2 fromPos, Vector2 toPos, roboteam_msgs::Worl
     double minDistance = rtt::ai::constants::ROBOT_RADIUS * (safelyness * 3); // TODO: calibrate Rolf approved
 
     for (auto enemy : world.them) {
-        std::cout << enemy.id << " - " << distanceToLineWithEnds(enemy.pos, fromPos, toPos) << std::endl;
+        std::cout << enemy.id << " - " << distanceToLineWithEnds(enemy.pos, fromPos, toPos) << " - " << minDistance << std::endl;
         if (distanceToLineWithEnds(enemy.pos, fromPos, toPos) < minDistance) {
             return false;
         }
@@ -138,16 +138,19 @@ bool ControlUtils::hasClearVision(int fromID, int towardsID, roboteam_msgs::Worl
 }
 
 double ControlUtils::distanceToLineWithEnds(Vector2 pointToCheck, Vector2 lineStart, Vector2 lineEnd) {
-    Vector2 n = lineEnd - lineStart;
-    Vector2 pa = lineStart - pointToCheck;
-    Vector2 c = n*(n.dot(pa)/n.dot(n));
-    Vector2 d = pa - c;
-    Vector2 A = (pointToCheck - lineStart).project(lineStart, lineEnd);
-    Vector2 B = (pointToCheck - lineEnd).project(lineEnd, lineStart);
-    if ((A.length() + B.length()) > n.length()) {
-        return fmin(pa.length(), (lineEnd - pointToCheck).length());
-    }
-    else return d.length();
+    Vector2 projectionPoint = pointToCheck.project(lineStart,lineEnd);
+    return (projectionPoint - pointToCheck).length();
+
+//    Vector2 n = lineEnd - lineStart;
+//    Vector2 pa = lineStart - pointToCheck;
+//    Vector2 c = n*(n.dot(pa)/n.dot(n));
+//    Vector2 d = pa - c;
+//    Vector2 A = (pointToCheck - lineStart).project(lineStart, lineEnd);
+//    Vector2 B = (pointToCheck - lineEnd).project(lineEnd, lineStart);
+//    if ((A.length() + B.length()) > n.length()) {
+//        return fmin(pa.length(), (lineEnd - pointToCheck).length());
+//    }
+//    else return d.length();
 }
 
 //https://www.geeksforgeeks.org/check-if-two-given-line-segments-intersect/
