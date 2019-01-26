@@ -24,7 +24,7 @@
 
 #include "../skills/Chip.h"
 #include "../skills/Dribble.h"
-#include "../skills/GoToPosLuTh.h"
+
 #include "roboteam_ai/src/skills/SkillGoToPos.h"
 #include "../skills/Halt.h"
 #include "../skills/Kick.h"
@@ -34,12 +34,14 @@
 #include "../skills/Keeper.h"
 #include "../skills/GetBall.h"
 #include "../skills/Attack.h"
-#include "../skills/Pass.h"
+#include "roboteam_ai/src/skills/Pass.h"
+#include "roboteam_ai/src/skills/Receive.h"
 #include <roboteam_ai/src/skills/InterceptBall.h>
 #include <roboteam_ai/src/skills/GoToPosLuTh.h>
 #include <roboteam_ai/src/skills/InterceptBall.h>
 #include "../skills/DribbleRotate.h"
 #include <roboteam_ai/src/skills/Defend.h>
+#include "../skills/DefendOnRobot.h"
 #include <roboteam_ai/src/skills/InterceptBall.h>
 #include <roboteam_ai/src/skills/BasicGoToPos.h>
 
@@ -60,6 +62,8 @@
 #include <roboteam_ai/src/conditions/AimedAtGoal.h>
 #include "../conditions/BallInDefenseAreaAndStill.h"
 #include "../conditions/IsInDefenseArea.hpp"
+#include "../conditions/IsBeingPassedTo.h"
+#include "../conditions/IsCloseToPoint.h"
 
 /**
  * When you want to add a new class to the ai, you need to change this file so the first two vector have the FILE NAMES
@@ -74,12 +78,12 @@ std::vector<std::string> Switches::tacticJsonFileNames =
         {
          "QualificationTactic",
          "haltTactic",
+         "PassTacticRob",
+         "OffenseTactic",
          "OneAttackerTactic",
          "OneDefenderTactic",
-         "SingleKeeperTactic",
          "TwoDefendersTactic",
          "OneAttackerOneDefenderTactic",
-         "PassTactic",
          "Attactic",
          "EnterFormationTactic",
          "BallPlacementUsTactic",
@@ -87,13 +91,13 @@ std::vector<std::string> Switches::tacticJsonFileNames =
          "AttackerTreeTactic"};
 
 
-
 std::vector<std::string> Switches::strategyJsonFileNames =
         {
          "QualificationStrategy",
          "haltStrategy",
+         "PassStrategyRob",
+         "OffenseStrategy",
          "KeeperStrategy",
-         "PassStrategy",
          "DemoTeamTwenteStrategy",
          "twoPlayerStrategyV2",
          "threePlayerStrategyV2",
@@ -113,6 +117,7 @@ bt::Node::Ptr Switches::nonLeafSwitch(std::string name) {
     map["MemSelector"] =      std::make_shared<bt::MemSelector>();
     map["MemSequence"] =      std::make_shared<bt::MemSequence>();
     map["ParallelSequence"] = std::make_shared<bt::ParallelSequence>();
+    map["MemParallelSequence"] = std::make_shared<bt::MemParallelSequence>();
     map["Selector"] =         std::make_shared<bt::Selector>();
     map["Sequence"] =         std::make_shared<bt::Sequence>();
     map["Inverter"] =         std::make_shared<bt::Inverter>();
@@ -158,6 +163,7 @@ bt::Node::Ptr Switches::leafSwitch(std::string name, bt::Blackboard::Ptr propert
     map["Keeper"] =                 std::make_shared<rtt::ai::Keeper>(name, properties);
     map["Kick"] =                   std::make_shared<rtt::ai::Kick>(name, properties);
     map["Pass"] =                   std::make_shared<rtt::ai::Pass>(name, properties);
+    map["Receive"] =                std::make_shared<rtt::ai::Receive>(name, properties);
     map["RotateToAngle"] =          std::make_shared<rtt::ai::RotateToAngle>(name, properties);
     map["SkillGoToPos"] =           std::make_shared<rtt::ai::SkillGoToPos>(name, properties);
     map["BasicGoToPos"] =           std::make_shared<rtt::ai::BasicGoToPos>(name, properties);
@@ -183,8 +189,9 @@ bt::Node::Ptr Switches::leafSwitch(std::string name, bt::Blackboard::Ptr propert
     map["IsRobotClosestToBall"] =   std::make_shared<rtt::ai::IsRobotClosestToBall>(name, properties);
     map["IsInDefenseArea"] =        std::make_shared<rtt::ai::IsInDefenseArea>(name,properties);
     map["TheyHaveBall"] =           std::make_shared<rtt::ai::TheyHaveBall>(name, properties);
+    map["IsBeingPassedTo"] =        std::make_shared<rtt::ai::IsBeingPassedTo>(name, properties);
+    map["IsCloseToPoint"] =         std::make_shared<rtt::ai::IsCloseToPoint>(name, properties);
     map["IsBallOnOurSide"] =        std::make_shared<rtt::ai::IsBallOnOurSide>(name, properties);
-    map["BallInDefenseAreaAndStill"] = std::make_shared<rtt::ai::BallInDefenseAreaAndStill>(name, properties);
     map["IsInDefenseArea"] = std::make_shared<rtt::ai::IsInDefenseArea>(name, properties);
     map["DribbleRotate"] = std::make_shared<rtt::ai::DribbleRotate>(name, properties);
 
@@ -285,12 +292,22 @@ bt::Node::Ptr Switches::tacticSwitch(std::string name, bt::Blackboard::Ptr prope
                     {"eloRlauq", robotType::random}
             }
             },
-            {"BallPlacementUsTactic",{
-                    {"BallPlacementBot",robotType::random}
-            }
-            },
             {"AttackerTreeTactic",{
                     {"AttackerTreeBot1",robotType::random}
+            }
+            },
+            {"PassTacticRob", {
+                    {"passer", robotType::closeToBall},
+                    {"receiver", robotType::random}
+            }
+            },
+            {"OffenseTactic", {
+                  {"striker", robotType::closeToTheirGoal},
+                  {"assister", robotType::closeToBall}
+          }
+            },
+            {"BallPlacementUsTactic",{
+                    {"BallPlacementBot",robotType::random}
             }
             }
     };

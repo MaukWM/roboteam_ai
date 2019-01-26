@@ -188,6 +188,7 @@ void GetBall::sendOvershootCommand() {
     command.y_vel = (float) (approachPos-robot->pos).normalize().y*c::GETBALL_SPEED;
     command.w = lockedAngle;
     publishRobotCommand(command);
+
 }
 void GetBall::sendDribblingCommand() {
     roboteam_msgs::RobotCommand command;
