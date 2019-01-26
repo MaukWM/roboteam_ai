@@ -32,15 +32,29 @@ void BasicGoToPos::onInitialize() {
             ROS_ERROR("BasicGoToPos: No ball found! assuming (%f,%f)", targetPos.x, targetPos.y);
         }
     }
+    else if (properties->getBool("behindBall")){
+        if(ball){
+            targetPos=coach::Coach::getPositionBehindBallToGoal(0.2,false);
+        }
+        else{
+            ROS_ERROR("BasicGoToPos: No ball found! assuming (%f,%f)", targetPos.x, targetPos.y);
+        }
+    }
     goToPos.setAvoidBall(properties->getBool("avoidBall"));
     goToPos.setCanGoOutsideField(properties->getBool("canGoOutsideField"));
+
 }
 
 
 Skill::Status BasicGoToPos::onUpdate() {
 
     if (! robot) return Status::Running;
-
+    if (properties->getBool("behindBall")){
+        if(ball){
+            targetPos=coach::Coach::getPositionBehindBallToGoal(0.2,false);
+        }
+        else return Status::Running;
+    }
     roboteam_msgs::RobotCommand command;
     command.id = robot->id;
     command.use_angle = 1;

@@ -207,7 +207,7 @@ set(CONDITIONS_SOURCES
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/conditions/BallInDefenseAreaAndStill.h
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/conditions/IsBallOnOurSide.cpp
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/conditions/IsBallOnOurSide.h
-        roboteam_ai/src/conditions/AimedAtGoal.cpp roboteam_ai/src/conditions/AimedAtGoal.h)
+        roboteam_ai/src/conditions/AimedAtGoal.cpp roboteam_ai/src/conditions/AimedAtGoal.h roboteam_ai/src/conditions/BallInField.cpp roboteam_ai/src/conditions/BallInField.h)
 
 set(CONTROL_SOURCES
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/control/ControlUtils.cpp

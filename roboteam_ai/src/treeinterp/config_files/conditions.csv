@@ -9,3 +9,4 @@ WeHaveBall
 IsRobotClosestToBall,secondsAhead
 IsBallOnOurSide,inField
 AimedAtGoal
+BallInField

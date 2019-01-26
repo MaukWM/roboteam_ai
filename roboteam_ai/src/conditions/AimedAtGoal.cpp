@@ -20,9 +20,11 @@ bt::Node::Status AimedAtGoal::update() {
 std::string AimedAtGoal::node_name() {return "AimedAtGoal"; }
 bool AimedAtGoal::checkAim(){
     auto field=Field::get_field();
-    Vector2 goalLineStart=Vector2(field.field_length/2,-field.goal_width);
-    Vector2 goalLineEnd=Vector2(field.field_length/2,field.goal_width);
-    Vector2 ballAimPos=Vector2(robot->pos)+(Vector2(ball->pos)-Vector2(robot->pos)).stretchToLength(field.field_length);
+    Vector2 goalLineStart=Vector2(field.field_length/2,-field.goal_width/2);
+    Vector2 goalLineEnd=Vector2(field.field_length/2,field.goal_width/2);
+    Vector2 ballAimPosFromCentre=Vector2(robot->pos)+(Vector2(ball->pos)-Vector2(robot->pos)).stretchToLength(field.field_length);
+    Vector2 ballAimPosRobotOrient=Vector2(robot->pos)+Vector2(field.field_length,0).rotate(robot->angle);
+    Vector2 ballAimPos=(ballAimPosFromCentre*0.4+ballAimPosRobotOrient*0.6);
     return Control::lineSegmentsIntersect(goalLineStart,goalLineEnd,robot->pos,ballAimPos);
 }
 }
