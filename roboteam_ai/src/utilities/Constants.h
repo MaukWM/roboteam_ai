@@ -115,7 +115,7 @@ const QColor TACTIC_COLORS[] = {TACTIC_1, TACTIC_2, TACTIC_3, TACTIC_4, TACTIC_5
 
 const double standard_luth_P = 2.8;
 const double standard_luth_I = 0.4;
-const double standard_luth_D = 1.9;
+const double standard_luth_D = 2.5;
 } // constants
 } // ai
 } // rtt
