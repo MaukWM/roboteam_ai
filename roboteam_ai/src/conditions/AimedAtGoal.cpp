@@ -14,7 +14,8 @@ bt::Node::Status AimedAtGoal::update() {
     robot=getRobotFromProperties(properties);
     ball=World::getBall();
     if (!robot || !ball) return Status::Failure;
-
+    if (checkAim()) return Status::Success;
+    else return Status::Failure;
 }
 std::string AimedAtGoal::node_name() {return "AimedAtGoal"; }
 bool AimedAtGoal::checkAim(){

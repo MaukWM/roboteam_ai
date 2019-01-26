@@ -1,6 +1,6 @@
 HasBall
 TheyHaveBall
-HasBall
+HasBall, BounceRange
 BallKickedToOurGoal
 BallInDefenseAreaAndStill
 IsInDefenseArea
@@ -8,3 +8,4 @@ IsOnOurSide
 WeHaveBall
 IsRobotClosestToBall,secondsAhead
 IsBallOnOurSide,inField
+AimedAtGoal
