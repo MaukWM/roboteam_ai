@@ -61,7 +61,7 @@ Vector2 Coach::pickOffensivePassPosition(Vector2 fromPos) {
     double xStart = 0;
     double xEnd = field.field_length / 2 - 0.2;
     double yStart = -field.field_width / 2 + 0.2;
-    double yEnd = field.field_width / 2 - 0.2;
+    double yEnd = field.field_width / 2 - 0.4;
 
     int safelyness = 6;
     while (safelyness > 0) {
