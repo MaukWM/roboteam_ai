@@ -26,6 +26,8 @@ const double MAX_ANGULAR_VEL_CMD=16*M_PI;
 
 // Limits as defined in AI itself
 const double MAX_VEL=8.0;
+const double MAX_VEL_BALLPLACEMENT=3.0;
+
 //Other/multiple usage
 const int DEFAULT_ROBOT_ID = 1;
 const double MAX_ANGULAR_VELOCITY = 6.0; // rad per second??
@@ -102,6 +104,7 @@ const bool STD_SHOW_VORONOI = false;
 const bool STD_SHOW_PATHS_ALL = false;
 const bool STD_SHOW_PATHS_CURRENT = true;
 const bool STD_SHOW_BALL_PLACEMENT_MARKER = true;
+const bool STD_USE_REFEREE = true;
 
 const QColor FIELD_COLOR{30, 30, 30, 255};
 const QColor FIELD_LINE_COLOR = Qt::white;

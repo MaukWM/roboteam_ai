@@ -11,7 +11,7 @@ Attack::Attack(string name, bt::Blackboard::Ptr blackboard)
         :Skill(std::move(name), std::move(blackboard)) {
 }
 
-// TODO: WTF HARDCODED SHIT EVERYWHERE
+// TODO:  HARDCODED SHIT EVERYWHERE
 /// Get an update on the skill
 bt::Node::Status Attack::onUpdate() {
     if (! robot) return Status::Running;
@@ -50,8 +50,8 @@ bt::Node::Status Attack::onUpdate() {
     }
     Vector2 velocity;
     velocity = goToPos.goToPos(robot, targetPos, goToType);
-
     velocity = control::ControlUtils::VelocityLimiter(velocity);
+
     command.x_vel = static_cast<float>(velocity.x);
     command.y_vel = static_cast<float>(velocity.y);
     publishRobotCommand(command);
