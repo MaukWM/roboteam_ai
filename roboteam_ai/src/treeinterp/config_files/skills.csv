@@ -15,3 +15,4 @@ AvoidBallForBallPlacement
 BasicGoToPos,ROLE,avoidBall,canGoOutsideField
 Keeper
 Receive
+Defend

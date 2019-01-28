@@ -42,8 +42,13 @@ bt::Node::Status DefendOnRobot::onUpdate() {
         Vector2 targetPos = calculateLocation();
 
         std::cout << "Robot:" << robot->id << "TargetPos:" << targetPos << std::endl;
-        goToPos.goToPos(robot, targetPos, control::GoToType::luTh);
-
+        Vector2 velocities=goToPos.goToPos(robot, targetPos, control::GoToType::luTh);
+        roboteam_msgs::RobotCommand cmd;
+        cmd.x_vel=velocities.x;
+        cmd.y_vel=velocities.y;
+        cmd.w=0;
+        cmd.id=robot->id;
+        publishRobotCommand(cmd);
         return Status::Running;
     } else {
         return Status::Failure;

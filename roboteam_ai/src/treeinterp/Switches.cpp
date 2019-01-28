@@ -64,6 +64,7 @@
 #include "../conditions/IsInDefenseArea.hpp"
 #include "../conditions/IsBeingPassedTo.h"
 #include "../conditions/IsCloseToPoint.h"
+#include "../conditions/WeHaveBall.h"
 
 /**
  * When you want to add a new class to the ai, you need to change this file so the first two vector have the FILE NAMES
@@ -88,7 +89,9 @@ std::vector<std::string> Switches::tacticJsonFileNames =
          "EnterFormationTactic",
          "BallPlacementUsTactic",
          "AvoidBallForBallPlacementTactic",
-         "AttackerTreeTactic"};
+         "AttackerTreeTactic",
+         "SingleKeeperTactic",
+         "GetBallTactic"};
 
 
 std::vector<std::string> Switches::strategyJsonFileNames =
@@ -103,7 +106,8 @@ std::vector<std::string> Switches::strategyJsonFileNames =
          "threePlayerStrategyV2",
          "EnterFormationStrategy",
          "BallPlacementUsStrategy",
-         "AttackerTreeStrategy"
+         "AttackerTreeStrategy",
+         "twoPlayerStrategyBallBased"
         };
 
 std::vector<std::string> Switches::keeperJsonFiles =
@@ -189,6 +193,7 @@ bt::Node::Ptr Switches::leafSwitch(std::string name, bt::Blackboard::Ptr propert
     map["IsRobotClosestToBall"] =   std::make_shared<rtt::ai::IsRobotClosestToBall>(name, properties);
     map["IsInDefenseArea"] =        std::make_shared<rtt::ai::IsInDefenseArea>(name,properties);
     map["TheyHaveBall"] =           std::make_shared<rtt::ai::TheyHaveBall>(name, properties);
+    map["WeHaveBall"] =             std::make_shared<rtt::ai::WeHaveBall>(name,properties);
     map["IsBeingPassedTo"] =        std::make_shared<rtt::ai::IsBeingPassedTo>(name, properties);
     map["IsCloseToPoint"] =         std::make_shared<rtt::ai::IsCloseToPoint>(name, properties);
     map["IsBallOnOurSide"] =        std::make_shared<rtt::ai::IsBallOnOurSide>(name, properties);
@@ -304,10 +309,14 @@ bt::Node::Ptr Switches::tacticSwitch(std::string name, bt::Blackboard::Ptr prope
             {"OffenseTactic", {
                   {"striker", robotType::closeToTheirGoal},
                   {"assister", robotType::closeToBall}
-          }
+            }
             },
             {"BallPlacementUsTactic",{
                     {"BallPlacementBot",robotType::random}
+            }
+            },
+            {"GetBallTactic",{
+                    {"GetBallBot",robotType::closeToBall}
             }
             }
     };
