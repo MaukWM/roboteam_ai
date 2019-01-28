@@ -44,9 +44,10 @@ Receive::Status Receive::onUpdate() {
         command.id = robot->id;
         command.use_angle = 1;
 
-        if (((Vector2)robot->pos - passPosition).length() > 0.10) {
-            // std::cout << passPosition << robot->pos << " - Distance: " << ((Vector2)robot->pos - passPosition).length() << std::endl;
-            Vector2 velocities = goToPos.goToPos(robot, passPosition, GoToType::basic);
+        if (((Vector2)robot->pos - passPosition).length() > 0.05) {
+            std::cout << passPosition << robot->pos << " - Distance: " << ((Vector2)robot->pos - passPosition).length() << std::endl;
+            Vector2 velocities = goToPos.goToPos(robot, passPosition, GoToType::luTh);
+            velocities = control::ControlUtils::VelocityLimiter(velocities);
             command.x_vel = static_cast<float>(velocities.x);
             command.y_vel = static_cast<float>(velocities.y);
             command.w = static_cast<float>(velocities.angle());
@@ -68,7 +69,7 @@ Receive::Status Receive::onUpdate() {
                 velocities = control::ControlUtils::VelocityLimiter(velocities);
                 command.x_vel = static_cast<float>(velocities.x);
                 command.y_vel = static_cast<float>(velocities.y);
-                command.dribbler = 0;
+                command.dribbler = 1;
             }
         }
         publishRobotCommand(command);

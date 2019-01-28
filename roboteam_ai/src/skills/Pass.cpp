@@ -52,15 +52,7 @@ Pass::Status Pass::onUpdate() {
             break;
         }
         case Progression::KICKING: {
-//            if (((Vector2) ball->vel).length() < 0.2) {
-//                command.use_angle = 1;
-//                command.w = static_cast<float>(((Vector2) robotToPassTo->pos - ball->pos).angle());
-//                Vector2 velocities = goToPos.goToPos(robot, targetPos, GoToType::basic);
-//                command.x_vel = static_cast<float>(velocities.x);
-//                command.y_vel = static_cast<float>(velocities.y);
-//                currentProgress = Progression::POSITIONING;
-//
-//            }
+
             // TODO: check whether team mate is ready to receive pass
             if (coach::Coach::doesRobotHaveBall(robot->id, true, rtt::ai::constants::MAX_BALL_RANGE)) {
                 command.kicker = 1;
