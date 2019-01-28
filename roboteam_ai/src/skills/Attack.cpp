@@ -19,21 +19,22 @@ bt::Node::Status Attack::onUpdate() {
     Vector2 theirGoal = Field::get_their_goal_center();
     theirGoal.x -= 0.6;
 
-    Vector2 behindBall = Coach::getPositionBehindBallToPosition(0.5, theirGoal);
+    Vector2 behindBall = Coach::getPositionBehindBallToPosition(0.4, theirGoal);
     Vector2 deltaBall = behindBall - ball;
 
     roboteam_msgs::RobotCommand command;
     command.id = robot->id;
-    command.geneva_state = 5;
+    command.geneva_state = 4;
 
 
     GoToType goToType;
 
-    if (! Coach::isRobotBehindBallToPosition(0.3, theirGoal, robot->pos)) {
+    if (! Coach::isRobotBehindBallToPosition(0.4, theirGoal, robot->pos)) {
         goToPos.setAvoidBall(true);
         targetPos = behindBall;
         command.use_angle = 1;
         command.w = static_cast<float>((ball - (Vector2) (robot->pos)).angle());
+        goToPos.setAvoidBall(true);
         goToType = GoToType::luTh;
     }
     else {
@@ -46,6 +47,7 @@ bt::Node::Status Attack::onUpdate() {
             command.kicker_forced = 1;
             command.dribbler = 1;
         }
+        goToPos.setAvoidBall(false);
         goToType = GoToType::basic;
     }
     Vector2 velocity;

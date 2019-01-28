@@ -30,9 +30,9 @@ Pass::Status Pass::onUpdate() {
             } else return Status::Failure;
 
         case Progression::POSITIONING: {
-            if (!coach::Coach::isRobotBehindBallToPosition(0.30, positionToPassTo, robot->pos)) {
+            if (!coach::Coach::isRobotBehindBallToPosition(0.25, positionToPassTo, robot->pos)) {
                 goToType = GoToType::luTh;
-                targetPos = Coach::getPositionBehindBallToPosition(0.30, positionToPassTo);
+                targetPos = Coach::getPositionBehindBallToPosition(0.25, positionToPassTo);
             } else if (!coach::Coach::doesRobotHaveBall(robot->id, true, rtt::ai::constants::MAX_BALL_RANGE)) {
                 goToType = GoToType::basic;
                 targetPos = ball->pos;
@@ -41,7 +41,7 @@ Pass::Status Pass::onUpdate() {
                 return Status::Running;
             }
             command.use_angle = 1;
-            command.w = static_cast<float>(((Vector2) positionToPassTo - ball->pos).angle());
+            command.w = static_cast<float>((positionToPassTo - ball->pos).angle());
             command.dribbler = 0;
             Vector2 velocities = goToPos.goToPos(robot, targetPos, goToType);
             command.x_vel = static_cast<float>(velocities.x);
@@ -60,7 +60,7 @@ Pass::Status Pass::onUpdate() {
 
                     command.kicker_vel = static_cast<float>(rtt::ai::constants::MAX_KICK_POWER * kicker_vel_multiplier);
                     command.id = robot->id;
-                    std::cout << "KICK!" << std::endl;
+
                     publishRobotCommand(command);
                     checkTicks = 0;
                     return Status::Running;

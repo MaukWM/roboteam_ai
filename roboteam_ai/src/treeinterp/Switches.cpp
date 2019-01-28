@@ -86,6 +86,7 @@ std::vector<std::string> Switches::tacticJsonFileNames =
          "TwoDefendersTactic",
          "OneAttackerOneDefenderTactic",
          "Attactic",
+         "SingleKeeperTactic",
          "EnterFormationTactic",
          "BallPlacementUsTactic",
          "AvoidBallForBallPlacementTactic",
@@ -104,11 +105,8 @@ std::vector<std::string> Switches::strategyJsonFileNames =
          "threePlayerStrategyV2",
          "EnterFormationStrategy",
          "BallPlacementUsStrategy",
-<<<<<<< HEAD
-         "AttackerTreeStrategy"
-=======
+         "AttackerTreeStrategy",
          "BallPlacementThemStrategy"
->>>>>>> avoidance2
         };
 
 std::vector<std::string> Switches::keeperJsonFiles =
