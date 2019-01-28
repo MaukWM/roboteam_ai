@@ -63,6 +63,7 @@ Skill::Status BasicGoToPos::onUpdate() {
         command.w=static_cast<float>((Vector2(robot->pos)-targetPos).angle());
     }
     Vector2 velocity = goToPos.goToPos(robot, targetPos, control::GoToType::luTh);
+    velocity = control::ControlUtils::VelocityLimiter(velocity);
     command.x_vel = static_cast<float>(velocity.x);
     command.y_vel = static_cast<float>(velocity.y);
     publishRobotCommand(command);
