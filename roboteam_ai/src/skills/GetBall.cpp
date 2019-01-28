@@ -36,7 +36,7 @@ void GetBall::checkProgression() {
             std::cout<<"GetBall: APPROACHING-> TURNING"<<std::endl;
             return;
         }
-        if (robotHasBall(c::MAX_BALL_RANGE)) {
+        if (robotHasBall(c::MAX_BALL_BOUNCE_RANGE)) {
             std::cout<<"GetBall: APPROACHING -> OVERSHOOTING"<<std::endl;
             currentProgress = OVERSHOOTING;
             return;
@@ -92,9 +92,11 @@ void GetBall::onInitialize() {
 GetBall::Status GetBall::onUpdate() {
     if (!ball) return Status::Running;
     deltaPos = Vector2(ball->pos) - Vector2(robot->pos);
-    if(currentProgress!=OVERSHOOTING&&currentProgress!=DRIBBLING){
+
+  if(currentProgress!=OVERSHOOTING&&currentProgress!=DRIBBLING){
     approachPos= Vector2(ball->pos)+(Vector2(ball->pos)-Vector2(robot->pos)).stretchToLength(constants::GETBALL_OVERSHOOT);
     }
+
     if(!robotHasBall(constants::MAX_BALL_BOUNCE_RANGE)){
         lockedAngle=deltaPos.angle();
     }
@@ -186,6 +188,7 @@ void GetBall::sendOvershootCommand() {
     command.y_vel = (float) (approachPos-robot->pos).normalize().y*c::GETBALL_SPEED;
     command.w = lockedAngle;
     publishRobotCommand(command);
+
 }
 void GetBall::sendDribblingCommand() {
     roboteam_msgs::RobotCommand command;

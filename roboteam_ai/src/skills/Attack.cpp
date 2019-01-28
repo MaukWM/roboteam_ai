@@ -25,12 +25,12 @@ bt::Node::Status Attack::onUpdate() {
 
     GoToType goToType;
 
-    if (! Coach::isRobotBehindBallToGoal(0.5, false, robot->pos)) {
+    if (! Coach::isRobotBehindBallToGoal(0.3, false, robot->pos)) {
+        goToPos.setAvoidBall(true);
         targetPos = behindBall;
         command.use_angle = 1;
         command.w = static_cast<float>((ball - (Vector2) (robot->pos)).angle());
         goToType = GoToType::luTh;
-        if (abs(((Vector2) robot->pos - targetPos).length()) < 1.0) goToType = GoToType::basic;
     }
     else {
         targetPos = ball;
@@ -44,21 +44,9 @@ bt::Node::Status Attack::onUpdate() {
         goToType = GoToType::basic;
     }
     Vector2 velocity;
-    if (Field::pointIsInDefenceArea(robot->pos, true, 0.0)) {
-        velocity = ((Vector2) robot->pos - Field::get_our_goal_center()).stretchToLength(2.0);
-    }
-    else if (Field::pointIsInDefenceArea(robot->pos, false, 0.0)) {
-        velocity = ((Vector2) robot->pos - Field::get_their_goal_center()).stretchToLength(2.0);
-    }
-    else if (Field::pointIsInDefenceArea(ball, true) || Field::pointIsInDefenceArea(ball, false)) {
-        velocity = {0, 0};
-    }
-    else if (Field::pointIsInDefenceArea(targetPos, true)) {
-        velocity = {0, 0};
-    }
-    else {
-        velocity = goToPos.goToPos(robot, targetPos, goToType);
-    }
+    velocity = goToPos.goToPos(robot, targetPos, goToType);
+
+    velocity = control::ControlUtils::VelocityLimiter(velocity);
     command.x_vel = static_cast<float>(velocity.x);
     command.y_vel = static_cast<float>(velocity.y);
     publishRobotCommand(command);

@@ -14,12 +14,7 @@ BasicGoToPos::BasicGoToPos(string name, bt::Blackboard::Ptr blackboard)
 
 void BasicGoToPos::onInitialize() {
     robot = getRobotFromProperties(properties);
-    if (properties->hasVector2("target")) targetPos = properties->getVector2("target");
-    if (properties->getBool("goToBall")) targetPos = ball->pos;
-    goToPos.setAvoidBall(properties->getBool("avoidBall"));
-    goToPos.setCanGoOutsideField(properties->getBool("canGoOutsideField"));
     targetPos = properties->getVector2("target");
-
     if (properties->getBool("BallPlacementBefore")){
         if(ball){
             targetPos=coach::Coach::getBallPlacementBeforePos(ball->pos);
@@ -37,13 +32,29 @@ void BasicGoToPos::onInitialize() {
             ROS_ERROR("BasicGoToPos: No ball found! assuming (%f,%f)", targetPos.x, targetPos.y);
         }
     }
+    else if (properties->getBool("behindBall")){
+        if(ball){
+            targetPos=coach::Coach::getPositionBehindBallToGoal(0.2,false);
+        }
+        else{
+            ROS_ERROR("BasicGoToPos: No ball found! assuming (%f,%f)", targetPos.x, targetPos.y);
+        }
+    }
+    goToPos.setAvoidBall(properties->getBool("avoidBall"));
+    goToPos.setCanGoOutsideField(properties->getBool("canGoOutsideField"));
+
 }
 
 
 Skill::Status BasicGoToPos::onUpdate() {
 
     if (! robot) return Status::Running;
-
+    if (properties->getBool("behindBall")){
+        if(ball){
+            targetPos=coach::Coach::getPositionBehindBallToGoal(0.2,false);
+        }
+        else return Status::Running;
+    }
     roboteam_msgs::RobotCommand command;
     command.id = robot->id;
     command.use_angle = 1;
@@ -52,6 +63,7 @@ Skill::Status BasicGoToPos::onUpdate() {
         command.w=static_cast<float>((Vector2(robot->pos)-targetPos).angle());
     }
     Vector2 velocity = goToPos.goToPos(robot, targetPos, control::GoToType::luTh);
+    velocity = control::ControlUtils::VelocityLimiter(velocity);
     command.x_vel = static_cast<float>(velocity.x);
     command.y_vel = static_cast<float>(velocity.y);
     publishRobotCommand(command);

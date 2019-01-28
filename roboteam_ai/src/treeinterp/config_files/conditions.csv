@@ -1,10 +1,14 @@
 HasBall
 TheyHaveBall
-HasBall
-BallKickerToOurGoal
+HasBall, BounceRange
+BallKickedToOurGoal
+BallInDefenseAreaAndStill
+IsInDefenseArea
 IsOnOurSide
 WeHaveBall
 IsRobotClosestToBall,secondsAhead
 IsBallOnOurSide,inField
+AimedAtGoal
+BallInField
 IsBeingPassedTo
 IsCloseToPoint,ball,position,margin

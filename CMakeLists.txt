@@ -155,6 +155,8 @@ set(SKILLS_SOURCES
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/skills/RotateToAngle.h
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/skills/GetBall.cpp
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/skills/GetBall.h
+        ${PROJECT_SOURCE_DIR}/roboteam_ai/src/skills/GoToPosLuTh.h
+        ${PROJECT_SOURCE_DIR}/roboteam_ai/src/skills/GoToPosLuTh.cpp
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/skills/Pass.cpp
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/skills/Pass.h
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/skills/Receive.cpp
@@ -209,6 +211,7 @@ set(CONDITIONS_SOURCES
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/conditions/BallInDefenseAreaAndStill.h
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/conditions/IsBallOnOurSide.cpp
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/conditions/IsBallOnOurSide.h
+        roboteam_ai/src/conditions/AimedAtGoal.cpp roboteam_ai/src/conditions/AimedAtGoal.h roboteam_ai/src/conditions/BallInField.cpp roboteam_ai/src/conditions/BallInField.h
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/conditions/IsBeingPassedTo.cpp
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/conditions/IsBeingPassedTo.h
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/conditions/IsCloseToPoint.cpp

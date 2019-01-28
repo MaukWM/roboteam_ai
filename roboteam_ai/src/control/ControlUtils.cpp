@@ -101,8 +101,8 @@ double ControlUtils::distanceToLine(Vector2 PointToCheck, Vector2 LineStart, Vec
 }
 
 /// See if a robot has a clear vision towards another robot
-bool ControlUtils::clearLine(Vector2 fromPos, Vector2 toPos, roboteam_msgs::World world, int safelyness) {
-    double minDistance = rtt::ai::constants::ROBOT_RADIUS * (safelyness * 3); // TODO: calibrate Rolf approved
+bool ControlUtils::clearLine(Vector2 fromPos, Vector2 toPos, roboteam_msgs::World world, double safelyness) {
+    double minDistance = rtt::ai::constants::ROBOT_RADIUS * safelyness; // TODO: calibrate Rolf approved
 
     for (auto enemy : world.them) {
         std::cout << enemy.id << " - " << distanceToLineWithEnds(enemy.pos, fromPos, toPos) << " - " << minDistance << std::endl;

@@ -37,6 +37,7 @@
 #include "roboteam_ai/src/skills/Pass.h"
 #include "roboteam_ai/src/skills/Receive.h"
 #include <roboteam_ai/src/skills/InterceptBall.h>
+#include <roboteam_ai/src/skills/GoToPosLuTh.h>
 #include <roboteam_ai/src/skills/InterceptBall.h>
 #include "../skills/DribbleRotate.h"
 #include <roboteam_ai/src/skills/Defend.h>
@@ -49,7 +50,7 @@
 //  | INCLUDE CONDITIONS |
 //  |____________________|
 //
-
+#include "../conditions/BallInField.h"
 #include "../conditions/HasBall.hpp"
 #include "../conditions/CanSeeGoal.h"
 #include <roboteam_ai/src/conditions/TheyHaveBall.h>
@@ -58,6 +59,7 @@
 #include <roboteam_ai/src/conditions/IsBallOnOurSide.h>
 #include <roboteam_ai/src/skills/EnterFormation.h>
 #include <roboteam_ai/src/skills/AvoidBallForBallPlacement.h>
+#include <roboteam_ai/src/conditions/AimedAtGoal.h>
 #include "../conditions/BallInDefenseAreaAndStill.h"
 #include "../conditions/IsInDefenseArea.hpp"
 #include "../conditions/IsBeingPassedTo.h"
@@ -80,15 +82,13 @@ std::vector<std::string> Switches::tacticJsonFileNames =
          "OffenseTactic",
          "OneAttackerTactic",
          "OneDefenderTactic",
-         "SingleKeeperTactic",
          "TwoDefendersTactic",
          "OneAttackerOneDefenderTactic",
-         "KeeperTestTactic",
          "Attactic",
-         "KeeperTactic",
          "EnterFormationTactic",
          "BallPlacementUsTactic",
-         "AvoidBallForBallPlacementTactic"};
+         "AvoidBallForBallPlacementTactic",
+         "AttackerTreeTactic"};
 
 
 std::vector<std::string> Switches::strategyJsonFileNames =
@@ -102,7 +102,8 @@ std::vector<std::string> Switches::strategyJsonFileNames =
          "twoPlayerStrategyV2",
          "threePlayerStrategyV2",
          "EnterFormationStrategy",
-         "BallPlacementUsStrategy"
+         "BallPlacementUsStrategy",
+         "AttackerTreeStrategy"
         };
 
 std::vector<std::string> Switches::keeperJsonFiles =
@@ -155,6 +156,7 @@ bt::Node::Ptr Switches::leafSwitch(std::string name, bt::Blackboard::Ptr propert
     map["DribbleRotate"]=           std::make_shared<rtt::ai::DribbleRotate>(name,properties);
     map["GetBall"] =                std::make_shared<rtt::ai::GetBall>(name, properties);
     map["GoToPos"] =                std::make_shared<rtt::ai::GoToPos>(name, properties);
+    map["GoToPosLuTh"] =            std::make_shared<rtt::ai::GoToPosLuTh>(name, properties);
     map["Halt"] =                   std::make_shared<rtt::ai::Halt>(name, properties);
     map["Harass"] =                 std::make_shared<rtt::ai::Harass>(name, properties);
     map["InterceptBall"] =          std::make_shared<rtt::ai::InterceptBall>(name, properties);
@@ -178,9 +180,10 @@ bt::Node::Ptr Switches::leafSwitch(std::string name, bt::Blackboard::Ptr propert
      * IsOnOurSide
      * WeHaveBall
      */
-
+    map["AimedAtGoal"] =            std::make_shared<rtt::ai::AimedAtGoal>(name,properties);
     map["BallKickedToOurGoal"] =    std::make_shared<rtt::ai::BallKickedToOurGoal>(name, properties);
     map["BallInDefenseAreaAndStill"] = std::make_shared<rtt::ai::BallInDefenseAreaAndStill>(name,properties);
+    map["BallInField"] =            std::make_shared<rtt::ai::BallInField>(name,properties);
     map["CanSeeGoal"] =             std::make_shared<rtt::ai::CanSeeGoal>(name, properties);
     map["HasBall"] =                std::make_shared<rtt::ai::HasBall>(name, properties);
     map["IsRobotClosestToBall"] =   std::make_shared<rtt::ai::IsRobotClosestToBall>(name, properties);
@@ -189,7 +192,6 @@ bt::Node::Ptr Switches::leafSwitch(std::string name, bt::Blackboard::Ptr propert
     map["IsBeingPassedTo"] =        std::make_shared<rtt::ai::IsBeingPassedTo>(name, properties);
     map["IsCloseToPoint"] =         std::make_shared<rtt::ai::IsCloseToPoint>(name, properties);
     map["IsBallOnOurSide"] =        std::make_shared<rtt::ai::IsBallOnOurSide>(name, properties);
-    map["BallInDefenseAreaAndStill"] = std::make_shared<rtt::ai::BallInDefenseAreaAndStill>(name, properties);
     map["IsInDefenseArea"] = std::make_shared<rtt::ai::IsInDefenseArea>(name, properties);
     map["DribbleRotate"] = std::make_shared<rtt::ai::DribbleRotate>(name, properties);
 
@@ -238,7 +240,7 @@ bt::Node::Ptr Switches::tacticSwitch(std::string name, bt::Blackboard::Ptr prope
             }
             },
             {"SingleKeeperTactic", {
-                    {"keeper", robotType::closeToOurGoal}
+                    {"Keeper", robotType::closeToOurGoal}
             }
             },
             {"OneAttackerOneDefenderTactic", {
@@ -280,22 +282,18 @@ bt::Node::Ptr Switches::tacticSwitch(std::string name, bt::Blackboard::Ptr prope
                     //{"atak", robotType::closeToBall},
             }
             },
-            {"KeeperTacticV2", {
-                    {"keeper", robotType::random}
-            }
-            },
-            {"KeeperTactic", {
-                    {"keeper", robotType::random}
-            }
-            },
-            {"KeeperTestTactic", {
-                    {"keeper", robotType::random},
-                    {"atak", robotType::random}
+            {"PassTactic", {
+                    {"passOne", robotType::random},
+                    {"passB", robotType::random}
             }
             },
             {"QualificationTactic", {
                     {"qualRole", robotType::random},
                     {"eloRlauq", robotType::random}
+            }
+            },
+            {"AttackerTreeTactic",{
+                    {"AttackerTreeBot1",robotType::random}
             }
             },
             {"PassTacticRob", {
@@ -304,8 +302,8 @@ bt::Node::Ptr Switches::tacticSwitch(std::string name, bt::Blackboard::Ptr prope
             }
             },
             {"OffenseTactic", {
-                  {"striker", robotType::closeToTheirGoal},
-                  {"assister", robotType::closeToBall}
+                  {"assister", robotType::closeToBall},
+                  {"striker", robotType::random}
           }
             },
             {"BallPlacementUsTactic",{

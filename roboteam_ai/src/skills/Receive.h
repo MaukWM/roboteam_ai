@@ -22,8 +22,10 @@ private:
     Vector2 ballStartVel;
     bool initializedBall;
 
+    bool ready;
+
     int checkTicks;
-    int maxCheckTicks = 20;
+    int maxCheckTicks = 5;
 
     int stopDribbleTick = 0;
     int stopDribbleTicks = 20;

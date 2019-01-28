@@ -63,7 +63,7 @@ Vector2 Coach::pickOffensivePassPosition(Vector2 fromPos) {
     double yStart = -field.field_width / 2 + 0.2;
     double yEnd = field.field_width / 2 - 0.2;
 
-    int safelyness = 3;
+    int safelyness = 6;
     while (safelyness > 0) {
 
         int attempt = 0;
@@ -71,8 +71,8 @@ Vector2 Coach::pickOffensivePassPosition(Vector2 fromPos) {
         while (attempt <= maxAttempts) {
             double x = (xEnd - xStart) * ( (double)rand() / (double)RAND_MAX) + xStart;
             double y = (yEnd - yStart) * ( (double)rand() / (double)RAND_MAX) + yStart;
-            if (control::ControlUtils::clearLine(fromPos, {x, y}, world, safelyness)) {
-                if (control::ControlUtils::clearLine({x, y}, Field::get_their_goal_center(), world, safelyness)) {
+            if (control::ControlUtils::clearLine(fromPos, {x, y}, world, safelyness * 0.5)) {
+                if (control::ControlUtils::clearLine({x, y}, Field::get_their_goal_center(), world, safelyness * 0.5)) {
                     return {x, y};
                 }
             }
@@ -304,6 +304,19 @@ Vector2 Coach::getFormationPosition(int robotId) {
     return {targetLocationY, 0};
 }
 
+Vector2 Coach::getBallPlacementPos(){
+    return interface::InterfaceValues::getBallPlacementTarget();
+}
+
+Vector2 Coach::getBallPlacementBeforePos(Vector2 ballPos){
+    Vector2 PlacePos=interface::InterfaceValues::getBallPlacementTarget();
+    Vector2 targetPos=ballPos + (PlacePos - ballPos).stretchToLength(constants::BP_MOVE_TOWARDS_DIST);
+    return targetPos;
+}
+Vector2 Coach::getBallPlacementAfterPos(Vector2 ballPos,double RobotAngle){
+    Vector2 targetPos=interface::InterfaceValues::getBallPlacementTarget() + Vector2(constants::BP_MOVE_BACK_DIST,0).rotate(RobotAngle+M_PI);
+    return targetPos;
+}
 int Coach::getRobotClosestToGoal(bool ourRobot, bool ourGoal) {
     roboteam_msgs::World_<std::allocator<void>>::_them_type robots = ourRobot ? World::get_world().us : World::get_world().them;
     Vector2 target = ourGoal ? Field::get_our_goal_center() : Field::get_their_goal_center();
@@ -342,20 +355,6 @@ bool Coach::isPassed() {
 
 void Coach::setPassed(bool passed) {
     Coach::passed = passed;
-}
-
-Vector2 Coach::getBallPlacementPos(){
-    return interface::InterfaceValues::getBallPlacementTarget();
-}
-
-Vector2 Coach::getBallPlacementBeforePos(Vector2 ballPos){
-    Vector2 PlacePos=interface::InterfaceValues::getBallPlacementTarget();
-    Vector2 targetPos=ballPos + (PlacePos - ballPos).stretchToLength(constants::BP_MOVE_TOWARDS_DIST);
-    return targetPos;
-}
-Vector2 Coach::getBallPlacementAfterPos(Vector2 ballPos,double RobotAngle){
-    Vector2 targetPos=interface::InterfaceValues::getBallPlacementTarget() + Vector2(constants::BP_MOVE_BACK_DIST,0).rotate(RobotAngle+M_PI);
-    return targetPos;
 }
 
     const Vector2 &Coach::getPassPosition() {

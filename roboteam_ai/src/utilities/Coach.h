@@ -83,9 +83,9 @@ public:
     static void removeFormationRobot(int id);
     static Vector2 getFormationPosition(int robotId);
 
-    static Vector2 getBallPlacementPos();
-    static Vector2 getBallPlacementBeforePos(Vector2 ballPos);
-    static Vector2 getBallPlacementAfterPos(Vector2 ballPos, double RobotAngle);
+        static Vector2 getBallPlacementPos();
+        static Vector2 getBallPlacementBeforePos(Vector2 ballPos);
+        static Vector2 getBallPlacementAfterPos(Vector2 ballPos, double RobotAngle);
 };
 
 }

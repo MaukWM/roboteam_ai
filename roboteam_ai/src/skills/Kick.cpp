@@ -36,6 +36,7 @@ void Kick::sendKickCommand(double kickVel) {
     command.kicker_forced = (unsigned char) true;
     command.kicker_vel = (float) kickVel;
     publishRobotCommand(command);
+    std::cout<<"KICKING!!"<<std::endl;
 }
 
 } // ai

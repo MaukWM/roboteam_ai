@@ -32,7 +32,7 @@ class ControlUtils {
         static rtt::Vector2 getClosestRobot(rtt::Vector2 &pos, int &id, bool ourTeam, float &t);
         static rtt::Vector2 getClosestRobot(rtt::Vector2 &pos, int &id, bool ourTeam);
         static rtt::Vector2 getClosestRobot(rtt::Vector2 &pos);
-        static bool clearLine(Vector2 fromPos, Vector2 toPos, roboteam_msgs::World world, int safelyness);
+        static bool clearLine(Vector2 fromPos, Vector2 toPos, roboteam_msgs::World world, double safelyness);
         static bool hasClearVision(int from, int towards, roboteam_msgs::World world, int safelyness);
         static bool onLineSegment(Vector2 p, Vector2 q, Vector2 r);
         static rtt::Vector2 twoLineIntersection(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2);

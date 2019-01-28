@@ -12,9 +12,8 @@ Pass::Pass(string name, bt::Blackboard::Ptr blackboard)
 
 void Pass::onInitialize() {
     goToPos.setAvoidBall(true);
-    robotToPassToID = coach::Coach::getRobotClosestToGoal(true, false);
+    robotToPassToID = robotDealer::RobotDealer::findRobotForRole("striker");
     positionToPassTo = coach::Coach::pickOffensivePassPosition(ball->pos);
-    std::cout << positionToPassTo << std::endl;
     currentProgress = Progression::INITIATING;
 }
 
@@ -38,9 +37,7 @@ Pass::Status Pass::onUpdate() {
                 goToType = GoToType::basic;
                 targetPos = ball->pos;
             } else { // if robot has ball
-                if (coach::Coach::isReadyToReceivePass()) {
-                    currentProgress = Progression::KICKING;
-                }
+                currentProgress = Progression::KICKING;
                 return Status::Running;
             }
             command.use_angle = 1;
@@ -54,29 +51,34 @@ Pass::Status Pass::onUpdate() {
         case Progression::KICKING: {
 
             // TODO: check whether team mate is ready to receive pass
-            if (coach::Coach::doesRobotHaveBall(robot->id, true, rtt::ai::constants::MAX_BALL_RANGE)) {
-                command.kicker = 1;
-                command.kicker_forced = 1;
-                distance = ((Vector2)ball->pos - positionToPassTo).length();
-                kicker_vel_multiplier = distance > maxDistance ? 1.0 : distance / maxDistance;
+            if (coach::Coach::isReadyToReceivePass()) {
+                if (coach::Coach::doesRobotHaveBall(robot->id, true, rtt::ai::constants::MAX_BALL_RANGE)) {
+                    command.kicker = 1;
+                    command.kicker_forced = 1;
+                    distance = ((Vector2) ball->pos - positionToPassTo).length();
+                    kicker_vel_multiplier = distance > maxDistance ? 1.0 : distance / maxDistance;
 
-                command.kicker_vel = static_cast<float>(rtt::ai::constants::MAX_KICK_POWER * kicker_vel_multiplier);
-                command.id = robot->id;
-                publishRobotCommand(command);
-                checkTicks = 0;
+                    command.kicker_vel = static_cast<float>(rtt::ai::constants::MAX_KICK_POWER * kicker_vel_multiplier);
+                    command.id = robot->id;
+                    std::cout << "KICK!" << std::endl;
+                    publishRobotCommand(command);
+                    checkTicks = 0;
+                    return Status::Running;
+                }
+                if (Vector2(ball->vel).length() > 0.4 &&
+                    ((Vector2) robot->pos - ball->pos).length() > rtt::ai::constants::MAX_BALL_RANGE * 2) {
+                    Coach::setRobotBeingPassedTo(-1);
+                    Coach::setPassed(true);
+                    return Status::Success;
+                } else if (checkTicks < maxCheckTicks) {
+                    checkTicks++;
+                    break;
+                }
+                currentProgress = Progression::POSITIONING;
                 return Status::Running;
-            }
-            if (Vector2(ball->vel).length() > 0.4 && ((Vector2)robot->pos - ball->pos).length() > rtt::ai::constants::MAX_BALL_RANGE * 2) {
-                Coach::setRobotBeingPassedTo(-1);
-                Coach::setPassed(true);
-                return Status::Success;
-            } else if (checkTicks < maxCheckTicks) {
-                std::cout << Vector2(ball->vel).length() << std::endl;
-                checkTicks++;
+            } else {
                 break;
             }
-            currentProgress = Progression::POSITIONING;
-            return Status::Running;
         }
     }
 
