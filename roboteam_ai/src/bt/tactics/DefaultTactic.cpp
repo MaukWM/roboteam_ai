@@ -63,7 +63,7 @@ void bt::DefaultTactic::claimOptionalRobots() {
         auto type = role.second;
         if (type == robotDealer::RobotType::optional) {
             if (dealer::claimRobotForOptionalTactic(name, role.first) != -1) {
-                
+
             }
 
         }
