@@ -10,6 +10,8 @@
 namespace bt {
 
 class DefaultTactic : public Tactic {
+    private:
+        bool needsOptional = false;
     public:
         int robotsNeeded = -1;
         std::map<std::string, robotType> robots;
@@ -17,6 +19,7 @@ class DefaultTactic : public Tactic {
         void initialize() override;
         Node::Status update() override;
         void claimRobots();
+        void claimOptionalRobots();
 };
 }
 

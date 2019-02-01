@@ -19,13 +19,16 @@ enum RobotType : short {
     closeToOurGoal,
     betweenBallAndOurGoal,
     closeToTheirGoal,
-    random
+    random,
+    optional
 
 };
 
 class RobotDealer {
 
     private:
+
+        static std::vector<int> optionalRobots;
 
         static std::map<std::string, std::set<std::pair<int, std::string>>> robotOwners;
 
@@ -49,6 +52,8 @@ class RobotDealer {
     public:
 
         static int claimRobotForTactic(RobotType feature, std::string tacticName, std::string roleName);
+
+        static int claimRObotForOptionalTactic(std::string tacticName, std::string roleName);
 
         static std::set<int> getAvailableRobots();
 

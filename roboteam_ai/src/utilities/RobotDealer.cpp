@@ -1,4 +1,3 @@
-
 //
 // Created by baris on 16/11/18.
 //
@@ -6,13 +5,14 @@
 #include "World.h"
 #include "Field.h"
 #include "ros/ros.h"
-#include <utility>
 
 namespace robotDealer {
 
 std::map<std::string, std::set<std::pair<int, std::string>>> RobotDealer::robotOwners;
 
 std::mutex RobotDealer::robotOwnersLock;
+
+std::vector<int> RobotDealer::optionalRobots;
 
 /// For internal use
 /// Removes a robot with an ID from the map and if the tactic then is empty it removes the tactic
@@ -353,6 +353,9 @@ std::string RobotDealer::getRoleNameForId(int ID) {
 void RobotDealer::halt() {
     robotOwners.clear();
     RobotDealer::updateFromWorld();
+}
+int RobotDealer::claimRObotForOptionalTactic(std::string tacticName, std::string roleName) {
+    return 0;
 }
 
 } // RobotDealer
