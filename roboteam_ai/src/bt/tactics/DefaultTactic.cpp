@@ -13,7 +13,7 @@ bt::Node::Status bt::DefaultTactic::update() {
         status = Status::Waiting;
     }
     // try to get the optional robots
-    if (robotsNeeded) {
+    if (needsOptional) {
 
     }
     else {
@@ -59,7 +59,15 @@ void bt::DefaultTactic::claimRobots() {
 }
 void bt::DefaultTactic::claimOptionalRobots() {
 
-    //TODO make sure that the robots are claimed optionally in the Robot dealer
+    for (const auto &role : robots) {
+        auto type = role.second;
+        if (type == robotDealer::RobotType::optional) {
+            if (dealer::claimRobotForOptionalTactic(name, role.first) != -1) {
+                
+            }
+
+        }
+    }
 
 }
 
