@@ -30,6 +30,8 @@ class RobotDealer {
 
         static std::vector<int> optionalRobots;
 
+        static std::mutex optionalLock;
+
         static std::map<std::string, std::set<std::pair<int, std::string>>> robotOwners;
 
         static std::mutex robotOwnersLock;
@@ -53,7 +55,7 @@ class RobotDealer {
 
         static int claimRobotForTactic(RobotType feature, std::string tacticName, std::string roleName);
 
-        static int claimRObotForOptionalTactic(std::string tacticName, std::string roleName);
+        static int claimRobotForOptionalTactic(std::string tacticName, std::string roleName);
 
         static std::set<int> getAvailableRobots();
 

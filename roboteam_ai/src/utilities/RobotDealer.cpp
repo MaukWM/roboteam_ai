@@ -12,6 +12,8 @@ std::map<std::string, std::set<std::pair<int, std::string>>> RobotDealer::robotO
 
 std::mutex RobotDealer::robotOwnersLock;
 
+std::mutex RobotDealer::optionalLock;
+
 std::vector<int> RobotDealer::optionalRobots;
 
 /// For internal use
@@ -69,6 +71,7 @@ void RobotDealer::updateFromWorld() {
 
 }
 
+/// This is only claim optional robots if there are no free robots on the field.
 int RobotDealer::claimRobotForTactic(RobotType feature, std::string roleName, std::string tacticName) {
 
     std::set<int> ids = RobotDealer::getAvailableRobots();
@@ -158,6 +161,17 @@ std::set<int> RobotDealer::getAvailableRobots() {
     std::set<int> ids;
     for (const auto &pair : set) {
         ids.insert(pair.first);
+    }
+
+    // Destroy the lock because why not
+    lock.~lock_guard();
+    // If the are no available robots we will get from the optional robots
+
+    if (ids.empty()) {
+        std::lock_guard<std::mutex> lockie(optionalLock);
+        for (auto ID : optionalRobots) {
+            ids.insert(ID);
+        }
     }
     return ids;
 }
@@ -354,8 +368,19 @@ void RobotDealer::halt() {
     robotOwners.clear();
     RobotDealer::updateFromWorld();
 }
-int RobotDealer::claimRObotForOptionalTactic(std::string tacticName, std::string roleName) {
-    return 0;
+int RobotDealer::claimRobotForOptionalTactic(std::string tacticName, std::string roleName) {
+
+    std::set<int> ids = RobotDealer::getAvailableRobots();
+    std::lock_guard<std::mutex> lock(optionalLock);
+    for (auto ID : ids) {
+        if (std::find(optionalRobots.begin(), optionalRobots.end(), ID) == optionalRobots.end()) {
+            std::lock_guard<std::mutex> lock(robotOwnersLock);
+            RobotDealer::unFreeRobot(ID);
+            RobotDealer::addRobotToOwnerList(ID, std::move(tacticName), std::move(roleName));
+            return ID;
+        }
+    }
+    return -1;
 }
 
 } // RobotDealer
