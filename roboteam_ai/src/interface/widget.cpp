@@ -26,6 +26,9 @@ void Visualizer::paintEvent(QPaintEvent* event) {
         drawBall(painter);
         drawRobots(painter);
 
+        bool plotCurve = true;
+        drawBezier(painter, 1, Drawer::getBezierCurve(plotCurve), Qt::white);
+
         if (showPath) {
             for (auto robot : selectedRobots) {
                 drawDataPoints(painter, Drawer::getGoToPosLuThPoints(robot.id));
@@ -219,6 +222,15 @@ void Visualizer::drawDataPoints(QPainter &painter, std::vector<std::pair<Vector2
             Vector2 pointOnScreen = toScreenPosition(point.first);
             painter.drawEllipse(pointOnScreen.x, pointOnScreen.y, pointSize, pointSize);
         }
+    }
+}
+
+void Visualizer::drawBezier(QPainter & painter, int pointSize, std::vector<Vector2> bezierCurve, QColor curveColor) {
+
+    painter.setPen(curveColor);
+    for (Vector2 &point : bezierCurve) {
+        Vector2 pointOnScreen = toScreenPosition(point);
+        painter.drawEllipse(pointOnScreen.x, pointOnScreen.y, pointSize, pointSize);
     }
 }
 

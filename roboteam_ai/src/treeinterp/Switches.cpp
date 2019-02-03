@@ -52,6 +52,7 @@
 #include <roboteam_ai/src/conditions/TheyHaveBall.h>
 #include <roboteam_ai/src/conditions/IsRobotClosestToBall.h>
 #include <roboteam_ai/src/conditions/BallKickedToOurGoal.h>
+#include <roboteam_ai/src/skills/GTPBezier.h>
 #include "../conditions/BallInDefenseAreaAndStill.h"
 #include "../conditions/IsInDefenseArea.hpp"
 
@@ -173,6 +174,9 @@ bt::Node::Ptr Switches::leafSwitch(std::string name, bt::Blackboard::Ptr propert
     }
     else if (name == "GoToPosLuTh") {
         node = std::make_shared<rtt::ai::GoToPosLuTh>(name, properties);
+    }
+    else if (name == "GTPBezier") {
+        node = std::make_shared<rtt::ai::GTPBezier>(name, properties);
     }
     else if (name == "Dribble") {
         node = std::make_shared<rtt::ai::Dribble>(name, properties);

@@ -175,6 +175,9 @@ set(SKILLS_SOURCES
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/skills/DribbleRotate.h
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/skills/BasicGoToPos.cpp
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/skills/BasicGoToPos.h
+        ${PROJECT_SOURCE_DIR}/roboteam_ai/src/skills/GTPBezier.cpp
+        ${PROJECT_SOURCE_DIR}/roboteam_ai/src/skills/GTPBezier.h
+
         roboteam_ai/src/skills/Defend.cpp roboteam_ai/src/skills/Defend.h
         )
 
@@ -223,7 +226,9 @@ set(CONTROL_SOURCES
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/control/ControlKick.h
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/control/ControlKick.cpp
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/control/Controller.cpp
-        ${PROJECT_SOURCE_DIR}/roboteam_ai/src/control/Controller.h)
+        ${PROJECT_SOURCE_DIR}/roboteam_ai/src/control/Controller.h
+        ${PROJECT_SOURCE_DIR}/roboteam_ai/src/control/pathFinder/CurveCreator.cpp
+        ${PROJECT_SOURCE_DIR}/roboteam_ai/src/control/pathFinder/CurveCreator.h)
 
 set(TEST_SOURCES
         roboteam_ai/test/main.cpp

@@ -17,6 +17,20 @@ std::map<int, std::vector<std::pair<Vector2, QColor>>> Drawer::InterceptPoints;
 std::mutex Drawer::keeperMutex;
 std::mutex Drawer::goToPosMutex;
 std::mutex Drawer::interceptMutex;
+std::vector<Vector2> Drawer::bezierCurve;
+
+
+void Drawer::setBezierCurve(std::vector<Vector2> curvePoints) {
+    bezierCurve = curvePoints;
+}
+
+std::vector<Vector2> Drawer::getBezierCurve(bool plot) {
+
+    if (plot) {
+        return bezierCurve;
+    }
+    return {};
+}
 
 void Drawer::setGoToPosLuThPoints(int id, std::vector<std::pair<rtt::Vector2, QColor>> points) {
     std::lock_guard<std::mutex> lock(goToPosMutex);
