@@ -49,7 +49,8 @@ void bt::DefaultTactic::claimRobots() {
     for (const auto &role : robots) {
         auto type = role.second;
         if (type == robotDealer::RobotType::optional) {
-            needsOptional = true;
+            // Keep count of the optional robots
+            needsOptional++;
             continue;
         }
         robotIDs.insert(dealer::claimRobotForTactic(role.second, name, role.first));
@@ -63,8 +64,10 @@ void bt::DefaultTactic::claimOptionalRobots() {
         auto type = role.second;
         if (type == robotDealer::RobotType::optional) {
             if (dealer::claimRobotForOptionalTactic(name, role.first) != -1) {
-
+                // Actually got an optional robot
+                needsOptional--;
             }
+
 
         }
     }

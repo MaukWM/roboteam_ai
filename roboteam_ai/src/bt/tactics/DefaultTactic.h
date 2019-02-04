@@ -11,7 +11,7 @@ namespace bt {
 
 class DefaultTactic : public Tactic {
     private:
-        bool needsOptional = false;
+        int needsOptional = -1;
     public:
         int robotsNeeded = -1;
         std::map<std::string, robotType> robots;
