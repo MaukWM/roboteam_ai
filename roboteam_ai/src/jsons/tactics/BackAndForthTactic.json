@@ -39,7 +39,7 @@
         },
           "lp7com3s2gaocio": {
             "id": "lp7com3s2gaocio",
-            "title": "GTPBezier",
+            "title": "GoToPos",
             "isRole": false,
             "properties": {
               "ROLE": "backAndForth1",
@@ -50,7 +50,7 @@
           },
           "ljdnfljnj4lnsn": {
             "id": "ljdnfljnj4lnsn",
-            "title": "GTPBezier",
+            "title": "GoToPos",
             "isRole": false,
             "properties": {
               "ROLE": "backAndForth1",
