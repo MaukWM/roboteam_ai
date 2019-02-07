@@ -68,6 +68,20 @@
  */
 
 
+std::vector<robotDealer::TacticData> Switches::tacticsNewish;
+
+
+
+
+
+
+
+
+
+
+
+
+
 std::vector<std::string> Switches::tacticJsonFileNames =
         {
          "QualificationTactic",
@@ -190,6 +204,8 @@ bt::Node::Ptr Switches::leafSwitch(std::string name, bt::Blackboard::Ptr propert
 /// If you made a tactic node for a new tactic this is where you add that
 bt::Node::Ptr Switches::tacticSwitch(std::string name, bt::Blackboard::Ptr properties) {
 
+    // TODO: just edit the global vector here
+
 
     std::map<std::string, std::map<std::string, robotType>> tactics = {
 
@@ -258,6 +274,43 @@ bt::Node::Ptr Switches::tacticSwitch(std::string name, bt::Blackboard::Ptr prope
             }
             }
     };
+
+    std::vector<tactic> tacticsNew = {
+
+            {
+                "hey",
+                3,
+                {
+                        {"random1", robotType::random},
+                        {"random2", robotType::random},
+                        {"random3", robotType::random},
+                        {"random4", robotType::random},
+                        {"random5", robotType::random},
+                        {"random6", robotType::random},
+                        {"random7", robotType::random}
+                }
+
+            }
+
+    };
+
+
+
+
+    for(const auto &current : tacticsNew) {
+        tactic temp = current;
+        std::cout << temp.minRobots << std::endl;
+        temp.minRobots = -1;
+        std::cout << temp.minRobots << std::endl;
+    }
+
+
+
+
+
+
+
+
     runErrorHandler(tactics);
 
     bt::Node::Ptr node;
@@ -266,7 +319,7 @@ bt::Node::Ptr Switches::tacticSwitch(std::string name, bt::Blackboard::Ptr prope
         node = std::make_shared<bt::VictoryDanceTactic>("VerySpecialTacticThatWouldRequireSpecialClass", properties);
     }
     else if (tactics.find(name) != tactics.end()) {
-        node = std::make_shared<bt::DefaultTactic>(name, properties, tactics[name]);
+        node = std::make_shared<bt::DefaultTactic>(Switches::findTacticRobots(name), properties);
     }
     else if (name == "EnterFormationTactic") {
         node = std::make_shared<bt::EnterFormationTactic>("EnterFormationTactic", properties);
@@ -290,4 +343,13 @@ void Switches::runErrorHandler(std::map<std::string, std::map<std::string, robot
         }
     }
 
+}
+Switches::tactic Switches::findTacticRobots(std::string name) {
+    for(auto current : tacticsNewish) {
+        if (current.name == name) {
+            return current;
+        }
+    }
+
+    ROS_ERROR("The TACTIC %s doesnt really exist", name.c_str());
 }

@@ -11,11 +11,11 @@
 
 class Switches {
         using robotType = robotDealer::RobotType;
-
-    private:
-        static void runErrorHandler(std::map<std::string, std::map<std::string, robotType>> tactics);
+        using tactic = robotDealer::TacticData;
 
     public:
+
+
 
         static std::vector<std::string> tacticJsonFileNames;
 
@@ -28,6 +28,15 @@ class Switches {
         static bt::Node::Ptr leafSwitch(std::string name, bt::Blackboard::Ptr properties);
 
         static bt::Node::Ptr tacticSwitch(std::string name, bt::Blackboard::Ptr properties);
+
+    private:
+        static void runErrorHandler(std::map<std::string, std::map<std::string, robotType>> tactics);
+
+
+
+        static tactic findTacticRobots(std::string name);
+
+        static std::vector<tactic> tacticsNewish;
 
 };
 

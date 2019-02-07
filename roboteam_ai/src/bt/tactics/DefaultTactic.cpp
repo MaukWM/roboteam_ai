@@ -27,13 +27,13 @@ bt::Node::Status bt::DefaultTactic::update() {
 }
 
 
-bt::DefaultTactic::DefaultTactic(std::string name, bt::Blackboard::Ptr blackboard,
-        std::map<std::string, robotType> robots_) {
+bt::DefaultTactic::DefaultTactic(tactic me, bt::Blackboard::Ptr blackboard) {
 
-    robots = std::move(robots_);
+    robots = std::move(me.roles);
     globalBB = std::move(blackboard);
     this->name = std::move(name);
-    robotsNeeded = static_cast<int>(robots.size());
+    robotsNeeded = me.minRobots;
+    maxRobots = static_cast<int>(robots.size());
 }
 
 void bt::DefaultTactic::initialize() {
@@ -48,6 +48,8 @@ void bt::DefaultTactic::claimRobots() {
         else robotIDs.erase(- 1);
     }
 }
+
+//TODO: Make a function that claims optional robots if there are any
 
 
 
