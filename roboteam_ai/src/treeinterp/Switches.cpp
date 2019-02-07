@@ -40,6 +40,7 @@
 #include <roboteam_ai/src/skills/Defend.h>
 #include <roboteam_ai/src/skills/InterceptBall.h>
 #include <roboteam_ai/src/skills/BasicGoToPos.h>
+#include <roboteam_ai/src/skills/Rotate180.h>
 
 //  ______________________
 //  |                    |
@@ -225,6 +226,9 @@ bt::Node::Ptr Switches::leafSwitch(std::string name, bt::Blackboard::Ptr propert
     }
     else if (name == "Pass") {
         node = std::make_shared<rtt::ai::Pass>(name, properties);
+    }
+    else if (name == "Rotate180") {
+        node = std::make_shared<rtt::ai::Rotate180>(name, properties);
     }
     else {
         ROS_ERROR("ERROR: Leaf not found!! using GoToPos..");

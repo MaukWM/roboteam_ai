@@ -30,6 +30,8 @@ void GoToPos::onInitialize() {
         speed=properties->getDouble("maxVel");
     else
         speed=constants::DEFAULT_MAX_VEL;
+
+    speed = 1;
 }
 
 /// Get an update on the skill
@@ -76,7 +78,7 @@ void GoToPos::onTerminate(Status s) {
     roboteam_msgs::RobotCommand command;
     command.id = robot->id;
     command.use_angle = 1;
-    command.w = static_cast<float>(deltaPos.angle());
+    command.w = 0;//static_cast<float>(deltaPos.angle());
 
     command.x_vel = 0;
     command.y_vel = 0;
@@ -123,7 +125,7 @@ void GoToPos::sendMoveCommand2() {
     command.id = robot->id;
     command.use_angle = 1;
 
-    command.w = static_cast<float>(deltaPos.angle());
+    command.w = 0;//static_cast<float>(deltaPos.angle());
     Vector2 deltaPosUnit = deltaPos.normalize();
 
     command.x_vel = static_cast<float>(deltaPosUnit.x*speed);// abs(angularVel)/(abs(angularVel)-1);

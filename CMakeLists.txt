@@ -177,6 +177,8 @@ set(SKILLS_SOURCES
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/skills/BasicGoToPos.h
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/skills/GTPBezier.cpp
         ${PROJECT_SOURCE_DIR}/roboteam_ai/src/skills/GTPBezier.h
+        ${PROJECT_SOURCE_DIR}/roboteam_ai/src/skills/Rotate180.h
+        ${PROJECT_SOURCE_DIR}/roboteam_ai/src/skills/Rotate180.cpp
 
         roboteam_ai/src/skills/Defend.cpp roboteam_ai/src/skills/Defend.h
         )
