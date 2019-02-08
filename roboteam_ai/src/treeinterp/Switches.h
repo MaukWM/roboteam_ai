@@ -30,7 +30,7 @@ class Switches {
         static bt::Node::Ptr tacticSwitch(std::string name, bt::Blackboard::Ptr properties);
 
     private:
-        static void runErrorHandler(std::map<std::string, std::map<std::string, robotType>> tactics);
+        static void runErrorHandler();
 
 
 

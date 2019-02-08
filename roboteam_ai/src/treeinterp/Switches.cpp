@@ -71,17 +71,6 @@
 std::vector<robotDealer::TacticData> Switches::tacticsNewish;
 
 
-
-
-
-
-
-
-
-
-
-
-
 std::vector<std::string> Switches::tacticJsonFileNames =
         {
          "QualificationTactic",
@@ -204,82 +193,85 @@ bt::Node::Ptr Switches::leafSwitch(std::string name, bt::Blackboard::Ptr propert
 /// If you made a tactic node for a new tactic this is where you add that
 bt::Node::Ptr Switches::tacticSwitch(std::string name, bt::Blackboard::Ptr properties) {
 
-    // TODO: just edit the global vector here
-
-
-    std::map<std::string, std::map<std::string, robotType>> tactics = {
-
-            {"haltTactic", {
-                    {"halt0", robotType::random},
-                    {"halt1", robotType::random},
-                    {"halt2", robotType::random},
-                    {"halt3", robotType::random},
-                    {"halt4", robotType::random},
-                    {"halt5", robotType::random},
-                    {"halt6", robotType::random},
-                    {"halt7", robotType::random}
-            }
-            },
-
-
-            {"OneAttackerTactic", {
-                    {"attacker", robotType::closeToTheirGoal}
-            }
-            },
-            {"SingleKeeperTactic", {
-                    {"Keeper", robotType::closeToOurGoal}
-            }
-            },
-            {"OneAttackerOneDefenderTactic", {
-                    {"defender", robotType::closeToOurGoal},
-                    {"attacker", robotType::closeToTheirGoal}
-            }
-            },
-            {"OneDefenderTactic", {
-                    {"defender", robotType::closeToTheirGoal}
-            }
-            },
-            {"TwoDefendersTactic", {
-                    {"defender1", robotType::closeToOurGoal},
-                    {"defender2", robotType::closeToOurGoal},
-            }
-            },
-            {"Attactic", {
-                    {"atak", robotType::random}
-                    //{"atak", robotType::closeToBall},
-            }
-            },
-            {"PassTactic", {
-                    {"passOne", robotType::random},
-                    {"passB", robotType::random}
-            }
-            },
-            {"QualificationTactic", {
-                    {"qualRole", robotType::random},
-                    {"eloRlauq", robotType::random}
-            }
-            },
-            {"randomTactic", {
-                    {"random1", robotType::random},
-                    {"random2", robotType::random},
-                    {"random3", robotType::random},
-                    {"random4", robotType::random},
-                    {"random5", robotType::random},
-                    {"random6", robotType::random},
-                    {"random7", robotType::random}
-            }
-            },
-            {"BallPlacementUsTactic",{
-                    {"BallPlacementBot",robotType::closeToBall}
-            }
-            }
-    };
-
-    std::vector<tactic> tacticsNew = {
-
+    tacticsNewish = {
             {
-                "hey",
-                3,
+                "haltTactic",
+                8,
+                {
+                        {"halt0", robotType::random},
+                        {"halt1", robotType::random},
+                        {"halt2", robotType::random},
+                        {"halt3", robotType::random},
+                        {"halt4", robotType::random},
+                        {"halt5", robotType::random},
+                        {"halt6", robotType::random},
+                        {"halt7", robotType::random}
+                }
+            },
+            {
+                "OneAttackerTactic",
+                1,
+                {
+                    {"attacker", robotType::closeToTheirGoal}
+                }
+            },
+            {
+                "SingleKeeperTactic",
+                1,
+                {
+                        {"Keeper", robotType::closeToOurGoal}
+                }
+
+            },
+            {
+                "OneAttackerOneDefenderTactic",
+                2,
+                {
+                        {"defender", robotType::closeToOurGoal},
+                        {"attacker", robotType::closeToTheirGoal}
+                }
+            },
+            {
+                "OneDefenderTactic",
+                1,
+                {
+                        {"defender", robotType::closeToTheirGoal}
+                }
+            },
+            {
+                "TwoDefendersTactic",
+                2,
+                {
+                        {"defender1", robotType::closeToOurGoal},
+                        {"defender2", robotType::closeToOurGoal},
+                }
+            },
+            {
+                "Attactic",
+                1,
+                {
+                        {"atak", robotType::random}
+                }
+            },
+            {
+                "PassTactic",
+                2,
+                {
+                        {"passOne", robotType::random},
+                        {"passB", robotType::random}
+                }
+            },
+            {
+                "QualificationTactic",
+                2,
+                {
+                        {"qualRole", robotType::random},
+                        {"eloRlauq", robotType::random}
+                }
+            },
+            {
+                "randomTactic",
+                7,
                 {
                         {"random1", robotType::random},
                         {"random2", robotType::random},
@@ -289,36 +281,24 @@ bt::Node::Ptr Switches::tacticSwitch(std::string name, bt::Blackboard::Ptr prope
                         {"random6", robotType::random},
                         {"random7", robotType::random}
                 }
-
+            },
+            {
+                "BallPlacementUsTactic",
+                1,
+                {
+                        {"BallPlacementBot",robotType::closeToBall}
+                }
             }
-
     };
 
-
-
-
-    for(const auto &current : tacticsNew) {
-        tactic temp = current;
-        std::cout << temp.minRobots << std::endl;
-        temp.minRobots = -1;
-        std::cout << temp.minRobots << std::endl;
-    }
-
-
-
-
-
-
-
-
-    runErrorHandler(tactics);
+    runErrorHandler();
 
     bt::Node::Ptr node;
 
     if (name == "VerySpecialTacticThatWouldRequireSpecialClass") {
         node = std::make_shared<bt::VictoryDanceTactic>("VerySpecialTacticThatWouldRequireSpecialClass", properties);
     }
-    else if (tactics.find(name) != tactics.end()) {
+    else if (findTacticRobots(name).name != "NOPE") {
         node = std::make_shared<bt::DefaultTactic>(Switches::findTacticRobots(name), properties);
     }
     else if (name == "EnterFormationTactic") {
@@ -333,13 +313,14 @@ bt::Node::Ptr Switches::tacticSwitch(std::string name, bt::Blackboard::Ptr prope
         ROS_ERROR("\n\n\nTHE TACTIC DOES NOT HAVE ROBOTS SPECIFIED IN THE SWITCHES:    %s\n\n\n", name.c_str());
         return node;
     }
+    return node;
 
 }
-void Switches::runErrorHandler(std::map<std::string, std::map<std::string, robotType>> tactics) {
+void Switches::runErrorHandler() {
 
-    for (auto &item : tactics) {
-        if (std::find(tacticJsonFileNames.begin(), tacticJsonFileNames.end(), item.first) == tacticJsonFileNames.end()) {
-            ROS_ERROR("THE FOLLOWING TACTIC IS MISSING THE FILE:   %s\n\n\n", item.first.c_str());
+    for (auto &item : tacticsNewish) {
+        if (std::find(tacticJsonFileNames.begin(), tacticJsonFileNames.end(), item.name) == tacticJsonFileNames.end()) {
+            ROS_ERROR("THE FOLLOWING TACTIC IS MISSING THE FILE:   %s\n\n\n", item.name.c_str());
         }
     }
 
@@ -351,5 +332,6 @@ Switches::tactic Switches::findTacticRobots(std::string name) {
         }
     }
 
-    ROS_ERROR("The TACTIC %s doesnt really exist", name.c_str());
+
+    return {"NOPE", 999999999, {}};
 }
