@@ -26,10 +26,14 @@ class GoToPos : public Skill {
         Vector2 deltaPos;
         Vector2 targetPos;
 
+        std::chrono::system_clock::time_point timer;
+        std::chrono::duration<double> timeDiff;
+        double endTime = 10;
+
         bool checkTargetPos(Vector2 pos);
 
         void sendMoveCommand();
-        void sendMoveCommand2();
+        void sendMoveCommand2(float xvel, float yvel);
         bool commandSend;
 
     public:

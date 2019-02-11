@@ -32,6 +32,7 @@ void GoToPos::onInitialize() {
         speed=constants::DEFAULT_MAX_VEL;
 
     speed = 1;
+    timer = std::chrono::system_clock::now();
 }
 
 /// Get an update on the skill
@@ -56,9 +57,19 @@ bt::Node::Status GoToPos::onUpdate() {
     }
     deltaPos = targetPos-robot->pos;
     // Now check the progress we made
-    currentProgress = checkProgression();
+    currentProgress = ON_THE_WAY; //checkProgression();
+
+    timeDiff = std::chrono::system_clock::now() - timer;
+    double xvel;
+    if (timeDiff.count() < endTime) {
+        xvel = 0.5*sin(timeDiff.count()/endTime * 2*M_PI);
+    } else {
+        xvel = 0;
+        currentProgress = DONE;
+    }
+
     // Send a move command
-    sendMoveCommand2();
+    sendMoveCommand2((float)xvel, 0);
 
     switch (currentProgress) {
 
@@ -115,7 +126,7 @@ void GoToPos::sendMoveCommand() {
 }
 
 /// Send a move robot command with a vector
-void GoToPos::sendMoveCommand2() {
+void GoToPos::sendMoveCommand2(float xvel, float yvel) {
     if (! checkTargetPos(targetPos)) {
         ROS_ERROR("Target position is not correct GoToPos");
         return;
@@ -128,10 +139,11 @@ void GoToPos::sendMoveCommand2() {
     command.w = 0;//static_cast<float>(deltaPos.angle());
     Vector2 deltaPosUnit = deltaPos.normalize();
 
-    command.x_vel = static_cast<float>(deltaPosUnit.x*speed);// abs(angularVel)/(abs(angularVel)-1);
-    command.y_vel = static_cast<float>(deltaPosUnit.y*speed);
+    command.x_vel = xvel;//static_cast<float>(deltaPosUnit.x*speed);// abs(angularVel)/(abs(angularVel)-1);
+    command.y_vel = yvel;//static_cast<float>(deltaPosUnit.y*speed);
     publishRobotCommand(command);
     commandSend = true;
+    std::cout << "  vel command: xvel = " << xvel << ",  yvel = " << yvel << std::endl;
 }
 
 /// Check the progress the robot made a9nd alter the currentProgress
