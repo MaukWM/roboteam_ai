@@ -1,0 +1,86 @@
+{
+  "name": "RotateTactic",
+  "data": {
+    "trees": [
+      {
+        "title": "RotateTactic",
+        "root": "qncs746k4lbevc7",
+        "nodes": {
+          "qncs746k4lbevc7": {
+            "id": "qncs746k4lbevc7",
+            "title": "ParallelSequence",
+            "children": [
+              "6mv52y86d9x05iuh1"
+            ]
+          },
+          "6qq4x9siwtgkdal8s": {
+            "id": "6qq4x9siwtgkdal8s",
+            "title": "Repeater",
+            "isRole": false,
+            "children": [
+              "lp7com3s2gaocio"
+            ]
+          },
+          "6mv52y86d9x05iuh1": {
+            "id": "6mv52y86d9x05iuh1",
+            "title": "Role",
+            "children": [
+              "jksndcoen3nha8j2n"
+            ],
+            "name": "rotate1"
+          },
+          "jksndcoen3nha8j2n": {
+            "id": "jksndcoen3nha8j2n",
+            "title": "MemSequence",
+            "children": [
+              "lp7com3s2gaocio",
+              "ljdnfljnj4lnsn",
+              "hrfvfdsvsncnniow",
+              "fnvnnvnviiiwop"
+            ]
+          },
+          "lp7com3s2gaocio": {
+            "id": "lp7com3s2gaocio",
+            "title": "RotateToAngle",
+            "isRole": false,
+            "properties": {
+              "ROLE": "rotate1",
+              "Angle": "1.57",
+              "RobotControl": "true"
+            }
+          },
+          "ljdnfljnj4lnsn": {
+            "id": "ljdnfljnj4lnsn",
+            "title": "RotateToAngle",
+            "isRole": false,
+            "properties": {
+              "ROLE": "rotate1",
+              "Angle": "3.14",
+              "RobotControl": "true"
+            }
+          },
+          "hrfvfdsvsncnniow": {
+            "id": "hrfvfdsvsncnniow",
+            "title": "RotateToAngle",
+            "isRole": false,
+            "properties": {
+              "ROLE": "rotate1",
+              "Angle": "-1.57",
+              "RobotControl": "true"
+            }
+          },
+          "fnvnnvnviiiwop": {
+            "id": "fnvnnvnviiiwop",
+            "title": "RotateToAngle",
+            "isRole": false,
+            "properties": {
+              "ROLE": "rotate1",
+              "Angle": "0",
+              "RobotControl": "true"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

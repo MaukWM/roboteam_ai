@@ -84,7 +84,8 @@ std::vector<std::string> Switches::tacticJsonFileNames =
          "KeeperTestTactic",
          "PassTactic",
          "BackAndForthTactic",
-         "SquareTactic"};
+         "SquareTactic",
+         "RotateTactic"};
 
 std::vector<std::string> Switches::strategyJsonFileNames =
         {"DemoTeamTwenteStrategy",
@@ -100,7 +101,8 @@ std::vector<std::string> Switches::strategyJsonFileNames =
          "KeeperStrategy",
          "PassStrategy",
          "BackAndForthStrategy",
-         "SquareStrategy"};
+         "SquareStrategy",
+         "RotateStrategy"};
 
 std::vector<std::string> Switches::keeperJsonFiles =
         {};
@@ -333,19 +335,23 @@ bt::Node::Ptr Switches::tacticSwitch(std::string name, bt::Blackboard::Ptr prope
             {"SquareTactic", {
                     {"square1", robotType::random}
             }
+            },
+             {"RotateTactic", {
+                     {"rotate1", robotType::random}
+             }
+             }
+            };
+
+            bt::Node::Ptr node;
+
+            if (name == "VerySpecialTacticThatWouldRequireSpecialClass") {
+                node = std::make_shared<bt::VictoryDanceTactic>("VerySpecialTacticThatWouldRequireSpecialClass", properties);
             }
-    };
-
-    bt::Node::Ptr node;
-
-    if (name == "VerySpecialTacticThatWouldRequireSpecialClass") {
-        node = std::make_shared<bt::VictoryDanceTactic>("VerySpecialTacticThatWouldRequireSpecialClass", properties);
+            else if (tactics.find(name) != tactics.end()) {
+                node = std::make_shared<bt::DefaultTactic>(name, properties, tactics[name]);
+            }
+            else if (name == "victoryDanceTactic") {
+                node = std::make_shared<bt::VictoryDanceTactic>("victoryDanceTactic", properties);
+            }
+            return node;
     }
-    else if (tactics.find(name) != tactics.end()) {
-        node = std::make_shared<bt::DefaultTactic>(name, properties, tactics[name]);
-    }
-    else if (name == "victoryDanceTactic") {
-        node = std::make_shared<bt::VictoryDanceTactic>("victoryDanceTactic", properties);
-    }
-    return node;
-}

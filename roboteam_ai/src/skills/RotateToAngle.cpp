@@ -23,6 +23,8 @@ void RotateToAngle::onInitialize() {
     else {
         ROS_ERROR("No use_angle identifier set in properties!");
     }
+
+    timer = std::chrono::system_clock::now();
 }
 
 /// Called when the Skill is Updated
@@ -36,6 +38,12 @@ RotateToAngle::Status RotateToAngle::onUpdate() {
 //__________________________________________________________________________________________________________
     deltaAngle = fabs(Control::constrainAngle(targetAngle - robot->angle));
     currentProgress = checkProgression();
+    timeDiff = std::chrono::system_clock::now() - timer;
+    std::cout << timeDiff.count() << std::endl;
+    if (timeDiff.count() < 3) {
+        deltaAngle = 0;
+        currentProgress = ROTATING;
+    }
 
     switch (currentProgress) {
         case ROTATING: {

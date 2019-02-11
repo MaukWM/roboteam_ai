@@ -19,6 +19,8 @@ class RotateToAngle : public Skill {
         };
         Progression currentProgress;
         Progression checkProgression();
+        std::chrono::system_clock::time_point timer;
+        std::chrono::duration<double> timeDiff;
 
     public:
         explicit RotateToAngle(string name, bt::Blackboard::Ptr blackboard);
