@@ -155,10 +155,6 @@ Vector2 ControlGoToPosClean::goToPos(std::shared_ptr<roboteam_msgs::WorldRobot> 
                 end - start);
         std::cout << "Other time" << (TotalTime.count() - time.count())*1000 << " Time spent in function:"
                   << time.count()*1000 << std::endl;
-        //clear out the queue again so that on next ticks it's fine. It might still be problematic with memory leaks? Not sure
-//        while(pathQueue.size()!=0){
-//            pathQueue.pop();
-//        }
         if (! path.empty()) { nicePath = true; }
     }
     drawInInterface();
