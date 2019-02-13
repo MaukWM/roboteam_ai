@@ -35,8 +35,7 @@
             "children": [
               "lp7com3s2gaocio",
               "ljdnfljnj4lnsn",
-              "hrfvfdsvsncnniow",
-              "fnvnnvnviiiwop"
+              "hrfvfdsvsncnniow"
             ]
           },
           "lp7com3s2gaocio": {
@@ -45,7 +44,7 @@
             "isRole": false,
             "properties": {
               "ROLE": "rotate1",
-              "Angle": "1.57",
+              "Angle": "0",
               "RobotControl": "true"
             }
           },
@@ -55,7 +54,7 @@
             "isRole": false,
             "properties": {
               "ROLE": "rotate1",
-              "Angle": "3.14",
+              "Angle": "1.57",
               "RobotControl": "true"
             }
           },
@@ -66,16 +65,6 @@
             "properties": {
               "ROLE": "rotate1",
               "Angle": "-1.57",
-              "RobotControl": "true"
-            }
-          },
-          "fnvnnvnviiiwop": {
-            "id": "fnvnnvnviiiwop",
-            "title": "RotateToAngle",
-            "isRole": false,
-            "properties": {
-              "ROLE": "rotate1",
-              "Angle": "0",
               "RobotControl": "true"
             }
           }
